@@ -64,11 +64,12 @@ const User = () => {
       onClick={() => navigateTo('/account')}
       icon={<img style={{ width: 20, verticalAlign: '-7px' }} src="//s.yezgea02.com/1615974766264/zhaq.png" alt="" />}
     />
-    {/* <Cell
+    <Cell
       hasArrow
-      title="我的标签"
+      title="导入账本"
+      onClick={() => navigateTo('/import-bills')}
       icon={<img style={{ width: 20, verticalAlign: '-7px' }} src="//s.yezgea02.com/1619321650235/mytag.png" alt="" />}
-    /> */}
+    />
     <Cell
       hasArrow
       title="关于我们"

@@ -7,6 +7,7 @@ import Detail from '@/container/Detail'
 import Account from '@/container/Account'
 import About from '@/container/About'
 import UserInfo from '@/container/UserInfo'
+import ImportBills from '@/container/ImportBills'
 
 const routes = [
   {
@@ -36,6 +37,10 @@ const routes = [
   {
     path: "/about",
     component: About
+  },
+  {
+    path: "/import-bills",
+    component: ImportBills
   },
   {
     path: "/userinfo",
