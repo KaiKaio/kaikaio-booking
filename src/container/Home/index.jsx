@@ -18,7 +18,7 @@ const Home = () => {
   const [totalExpense, setTotalExpense] = useState(0); // 总支出
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
   const [currentSelect, setCurrentSelect] = useState({}); // 当前筛选类型
-  const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')); // 当前筛选时间
+  const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM-DD')); // 当前筛选时间
   const [page, setPage] = useState(1); // 分页
   const [list, setList] = useState([]); // 账单列表
   const [totalPage, setTotalPage] = useState(0); // 分页总数
@@ -30,7 +30,7 @@ const Home = () => {
   }, [page, currentSelect, currentTime])
 
   const getBillList = async () => {
-    const { data } = await get(`/api/bill/list?date=${currentTime}&type_id=${currentSelect.id || 'all'}&page=${page}&page_size=5`);
+    const { data } = await get(`/api/bill/list?start=${dayjs().startOf('month').format('YYYY-MM-DD hh:mm:ss')}&end=${dayjs().endOf('month').format('YYYY-MM-DD hh:mm:ss')}&type_id=${currentSelect.id || 'all'}&page=${page}&page_size=5`);
     // 下拉刷新，重制数据
     if (page == 1) {
       setList(data.list);

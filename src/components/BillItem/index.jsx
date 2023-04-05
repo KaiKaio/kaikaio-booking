@@ -15,12 +15,13 @@ const BillItem = ({ bill }) => {
 
   // 当添加账单是，bill.bills 长度变化，触发当日收支总和计算。
   useEffect(() => {
-    const _income = bill.bills.filter(i => i.pay_type == 2).reduce((curr, item) => {
+    console.log(bill, '=> bill')
+    const _income = bill.bills?.filter(i => i.pay_type == 2).reduce((curr, item) => {
       curr += Number(item.amount);
       return curr;
     }, 0);
     setIncome(_income);
-    const _expense = bill.bills.filter(i => i.pay_type == 1).reduce((curr, item) => {
+    const _expense = bill.bills?.filter(i => i.pay_type == 1).reduce((curr, item) => {
       curr += Number(item.amount);
       return curr;
     }, 0);
@@ -46,7 +47,7 @@ const BillItem = ({ bill }) => {
       </div>
     </div>
     {
-      bill && bill.bills.sort((a, b) => b.date - a.date).map(item => <Cell
+      bill && bill.bills?.sort((a, b) => b.date - a.date).map(item => <Cell
         className={s.bill}
         key={item.id}
         onClick={() => goToDetail(item)}
@@ -60,7 +61,7 @@ const BillItem = ({ bill }) => {
           </>
         }
         description={<span style={{ color: item.pay_type == 2 ? 'red' : '#39be77' }}>{`${item.pay_type == 1 ? '-' : '+'}${item.amount}`}</span>}
-        help={<div>{dayjs(Number(item.date)).format('HH:mm')} {item.remark ? `| ${item.remark}` : ''}</div>}
+        help={<div>{item.remark ? `| ${item.remark}` : ''}</div>}
       >
       </Cell>)
     }
