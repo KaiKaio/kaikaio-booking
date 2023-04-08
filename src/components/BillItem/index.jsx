@@ -15,7 +15,6 @@ const BillItem = ({ bill }) => {
 
   // 当添加账单是，bill.bills 长度变化，触发当日收支总和计算。
   useEffect(() => {
-    console.log(bill, '=> bill')
     const _income = bill.bills?.filter(i => i.pay_type == 2).reduce((curr, item) => {
       curr += Number(item.amount);
       return curr;
@@ -55,7 +54,8 @@ const BillItem = ({ bill }) => {
           <>
             <CustomIcon
               className={s.itemIcon}
-              type={item.type_id ? typeMap[item.type_id].icon : 1}
+              // type={item.type_id ? typeMap[item.type_id].icon : 1}
+              type={1}
             />
             <span>{ item.type_name }</span>
           </>

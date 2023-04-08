@@ -7,7 +7,8 @@ import PopupAddBill from '@/components/PopupAddBill'
 import BillItem from '@/components/BillItem'
 import Empty from '@/components/Empty'
 import CustomIcon from '@/components/CustomIcon'
-import { get, REFRESH_STATE, LOAD_STATE } from '@/utils'
+import { REFRESH_STATE, LOAD_STATE } from '@/utils'
+import axios from '@/utils/axios'
 
 import s from './style.module.less'
 
@@ -30,7 +31,17 @@ const Home = () => {
   }, [page, currentSelect, currentTime])
 
   const getBillList = async () => {
-    const { data } = await get(`/api/bill/list?start=${dayjs().startOf('month').format('YYYY-MM-DD hh:mm:ss')}&end=${dayjs().endOf('month').format('YYYY-MM-DD hh:mm:ss')}&type_id=${currentSelect.id || 'all'}&page=${page}&page_size=5`);
+    const { data } = await axios({
+      url: '/api/bill/list',
+      params: {
+        start: dayjs(currentTime).startOf('month').format('YYYY-MM-DD') + ' 00:00:00',
+        end: dayjs(currentTime).endOf('month').format('YYYY-MM-DD') + ' 23:59:59',
+        type_id: currentSelect.id || 'all',
+        page: page,
+        page_size: 10
+      }
+    })
+
     // 下拉刷新，重制数据
     if (page == 1) {
       setList(data.list);

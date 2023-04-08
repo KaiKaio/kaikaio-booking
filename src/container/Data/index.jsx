@@ -125,7 +125,8 @@ const  Data = () => {
               <div className={s.type}>
                 <span className={cx({ [s.expense]: totalType == 'expense', [s.income]: totalType == 'income' })}>
                   <CustomIcon
-                    type={item.type_id ? typeMap[item.type_id].icon : 1}
+                    // type={item.type_id ? typeMap[item.type_id].icon : 1}
+                    type={1}
                   />
                 </span>
                 <span className={s.name}>{ item.type_name }</span>
