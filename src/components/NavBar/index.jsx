@@ -19,17 +19,17 @@ const NavBar = ({ showNav }) => {
         <TabBar.Item
           itemKey="/"
           title="账单"
-          icon={<CustomIcon type="zhangdan" />}
+          icon={<CustomIcon type="icon-wj-zd" />}
         />
         <TabBar.Item
           itemKey="/data"
           title="统计"
-          icon={<CustomIcon type="tongji" />}
+          icon={<CustomIcon type="icon-tongji" />}
         />
         <TabBar.Item
           itemKey="/user"
           title="我的"
-          icon={<CustomIcon type="wode" />}
+          icon={<CustomIcon type="icon-wode" />}
         />
       </TabBar>
   );

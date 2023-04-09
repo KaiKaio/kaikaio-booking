@@ -68,7 +68,7 @@ const Login = () => {
       <span className={cx({ [s.avtive]: type == 'register' })} onClick={() => setType('register')}>注册</span>
     </div>
     <div className={s.form}>
-      <Cell icon={<CustomIcon type="zhanghao" />}>
+      <Cell icon={<CustomIcon type="icon-wode" />}>
         <Input
           clearable
           type="text"
@@ -76,7 +76,7 @@ const Login = () => {
           onChange={(value) => setUsername(value)}
         />
       </Cell>
-      <Cell icon={<CustomIcon type="mima" />}>
+      <Cell icon={<CustomIcon type="icon-password" />}>
         <Input
           clearable
           type="password"
@@ -85,7 +85,7 @@ const Login = () => {
         />
       </Cell>
       {
-        type == 'register' ? <Cell icon={<CustomIcon type="mima" />}>
+        type == 'register' ? <Cell icon={<CustomIcon type="icon-password" />}>
           <Input
             clearable
             type="text"

@@ -9,6 +9,7 @@ import Empty from '@/components/Empty'
 import CustomIcon from '@/components/CustomIcon'
 import { REFRESH_STATE, LOAD_STATE } from '@/utils'
 import axios from '@/utils/axios'
+import { get } from '@/utils'
 
 import s from './style.module.less'
 
@@ -25,10 +26,20 @@ const Home = () => {
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [refreshing, setRefreshing] = useState(REFRESH_STATE.normal); // 下拉刷新状态
   const [loading, setLoading] = useState(LOAD_STATE.normal); // 上拉加载状态
+  const [icons, setIcons] = useState({}); // 上拉加载状态
 
   useEffect(() => {
     getBillList() // 初始化
   }, [page, currentSelect, currentTime])
+
+  useEffect(async () => {
+    const { data: { list } } = await get('/api/type/list');
+    const iconsMap = {};
+    list.forEach(item => {
+      iconsMap[item.id] = item.icon;
+    });
+    setIcons(iconsMap)
+  }, [])
 
   const getBillList = async () => {
     const { data } = await axios({
@@ -38,7 +49,7 @@ const Home = () => {
         end: dayjs(currentTime).endOf('month').format('YYYY-MM-DD') + ' 23:59:59',
         type_id: currentSelect.id || 'all',
         page: page,
-        page_size: 10
+        page_size: 999
       }
     })
 
@@ -48,8 +59,26 @@ const Home = () => {
     } else {
       setList(list.concat(data.list));
     }
-    setTotalExpense(data.totalExpense.toFixed(2));
-    setTotalIncome(data.totalIncome.toFixed(2));
+
+    // 计算总支出
+    const expenseTotal = data.list.reduce((total, item) => {
+      const itemSum = item?.bills.reduce((CTotal, CItem) => {
+        return CTotal + (CItem.pay_type === '1' ? (CItem.amount / 1) : 0)
+      }, 0)
+      return total + itemSum
+    }, 0)
+    
+    // // 计算总支出
+    const incomeTotal = data.list.reduce((total, item) => {
+      const itemSum = item?.bills.reduce((CTotal, CItem) => {
+        return CTotal + (CItem.pay_type === '2' ? (CItem.amount / 1) : 0)
+      }, 0)
+      return total + itemSum
+    }, 0)
+
+    setTotalExpense(expenseTotal.toFixed(2));
+    setTotalIncome(incomeTotal.toFixed(2));
+  
     setTotalPage(data.totalPage);
     // 上滑加载状态
     setLoading(LOAD_STATE.success);
@@ -130,15 +159,18 @@ const Home = () => {
           }}
         >
           {
-            list.map((item, index) => <BillItem
-              bill={item}
-              key={index}
-            />)
+            list.map((item, index) => (
+              <BillItem
+                icons={icons}
+                bill={item}
+                key={index}
+              />
+            ))
           }
         </Pull> : <Empty />
       }
     </div>
-    <div className={s.add} onClick={addToggle}><CustomIcon type='tianjia' /></div>
+    <div className={s.add} onClick={addToggle}><CustomIcon type='icon-bianjiwenzhang_huaban' /></div>
     <PopupType ref={typeRef} onSelect={select} />
     <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
     <PopupAddBill ref={addRef} onReload={refreshData} />

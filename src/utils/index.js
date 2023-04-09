@@ -8,25 +8,25 @@ export const post = axios.post
 
 export const typeMap = {
   1: {
-    icon: 'canyin'
+    icon: 'icon-canyin'
   },
   2: {
-    icon: 'fushi'
+    icon: 'icon-jiaotongxinxi'
   },
   3: {
-    icon: 'jiaotong'
+    icon: 'icon-kouhong'
   },
   4: {
-    icon: 'riyong'
+    icon: 'icon-fushi'
   },
   5: {
     icon: 'gouwu'
   },
   6: {
-    icon: 'xuexi'
+    icon: 'icon-yule'
   },
   7: {
-    icon: 'yiliao'
+    icon: 'icon-xiyanqu'
   },
   8: {
     icon: 'lvxing'

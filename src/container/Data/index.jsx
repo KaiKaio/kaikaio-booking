@@ -120,29 +120,32 @@ const  Data = () => {
       </div>
       <div className={s.content}>
         {
-          (totalType == 'expense' ? expenseData : incomeData).map(item => <div key={item.type_id} className={s.item}>
-            <div className={s.left}>
-              <div className={s.type}>
-                <span className={cx({ [s.expense]: totalType == 'expense', [s.income]: totalType == 'income' })}>
-                  <CustomIcon
-                    // type={item.type_id ? typeMap[item.type_id].icon : 1}
-                    type={1}
-                  />
-                </span>
-                <span className={s.name}>{ item.type_name }</span>
+          (
+            totalType == 'expense' ? expenseData : incomeData).map(item => (
+              <div key={item.type_id} className={s.item}>
+                <div className={s.left}>
+                  <div className={s.type}>
+                    <span className={cx({ [s.expense]: totalType == 'expense', [s.income]: totalType == 'income' })}>
+                      <CustomIcon
+                        type={item.type_id ? typeMap[item.type_id]?.icon : 1}
+                      />
+                    </span>
+                    <span className={s.name}>{ item.type_name }</span>
+                  </div>
+                  <div className={s.progress}>¥{ Number(item.number).toFixed(2) || 0 }</div>
+                </div>
+                <div className={s.right}>
+                  <div className={s.percent}>
+                    <Progress
+                      shape="line"
+                      percent={Number((item.number / Number(totalType == 'expense' ? totalExpense : totalIncome)) * 100).toFixed(2)}
+                      theme='primary'
+                    />
+                  </div>
+                </div>
               </div>
-              <div className={s.progress}>¥{ Number(item.number).toFixed(2) || 0 }</div>
-            </div>
-            <div className={s.right}>
-              <div className={s.percent}>
-                <Progress
-                  shape="line"
-                  percent={Number((item.number / Number(totalType == 'expense' ? totalExpense : totalIncome)) * 100).toFixed(2)}
-                  theme='primary'
-                />
-              </div>
-            </div>
-          </div>)
+            )
+          )
         }
       </div>
       <div className={s.proportion}>

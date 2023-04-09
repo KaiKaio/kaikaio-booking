@@ -71,8 +71,8 @@ const Detail = () => {
         </div>
       </div>
       <div className={s.operation}>
-        <span onClick={deleteDetail}><CustomIcon type='shanchu' />删除</span>
-        <span onClick={openModal}><CustomIcon type='tianjia' />编辑</span>
+        <span onClick={deleteDetail}><CustomIcon type='icon-shanchu' />删除</span>
+        <span onClick={openModal}><CustomIcon type='icon-bianji' />编辑</span>
       </div>
     </div>
     <PopupAddBill ref={addRef} detail={detail} onReload={getDetail} />

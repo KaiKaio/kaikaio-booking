@@ -8,7 +8,7 @@ import { typeMap } from '@/utils';
 
 import s from './style.module.less';
 
-const BillItem = ({ bill }) => {
+const BillItem = ({ bill, icons }) => {
   const [income, setIncome] = useState(0);
   const [expense, setExpense] = useState(0);
   const navigateTo = useNavigate()
@@ -36,12 +36,10 @@ const BillItem = ({ bill }) => {
       <div className={s.date}>{bill.date}</div>
       <div className={s.money}>
         <span>
-          <img src="//s.yezgea02.com/1615953405599/zhi%402x.png" alt='支' />
-            <span>¥{ expense.toFixed(2) }</span>
+          支出：¥{ expense.toFixed(2) }
         </span>
         <span>
-          <img src="//s.yezgea02.com/1615953405599/shou%402x.png" alt="收" />
-          <span>¥{ income.toFixed(2) }</span>
+          收入：¥{ income.toFixed(2) }
         </span>
       </div>
     </div>
@@ -54,10 +52,9 @@ const BillItem = ({ bill }) => {
           <>
             <CustomIcon
               className={s.itemIcon}
-              // type={item.type_id ? typeMap[item.type_id].icon : 1}
-              type={1}
+              type={icons[item.type_id]}
             />
-            <span>{ item.type_name }</span>
+            <span> { item.type_name }</span>
           </>
         }
         description={<span style={{ color: item.pay_type == 2 ? 'red' : '#39be77' }}>{`${item.pay_type == 1 ? '-' : '+'}${item.amount}`}</span>}
