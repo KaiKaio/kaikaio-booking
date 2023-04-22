@@ -3,7 +3,7 @@
  */
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Popup, Icon, Toast, Keyboard, Modal, Input  } from 'zarm';
+import { Popup, Icon, Toast, Keyboard, Modal, Input, Tabs  } from 'zarm';
 import cx from 'classnames'
 import dayjs from 'dayjs'; 
 import CustomIcon from '../CustomIcon'
@@ -11,6 +11,8 @@ import PopupDate from '../PopupDate'
 import { get, typeMap, post } from '@/utils'
 
 import s from './style.module.less';
+
+const { Panel } = Tabs;
 
 const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
   const dateRef = useRef()
@@ -24,6 +26,8 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
   const [remark, setRemark] = useState(''); // 备注
   const [showRemark, setShowRemark] = useState(false); // 备注输入框
   const [date, setDate] = useState(new Date()); // 日期
+
+  const [value, setValue] = useState(0);
  
 
   useEffect(() => {
@@ -172,7 +176,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
         <span className={cx(s.amount, s.animation)}>{amount}</span>
       </div>
       <div className={s.typeWarp}>
-        <div className={s.typeBody}>
+        <Tabs value={value} onChange={setValue} swipeable>
           {
             (payType == 'expense' ? expense : income).map(item => (
               <div 
@@ -195,6 +199,14 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
               </div>
             ))
           }
+          <Panel title="选项卡1">
+            <div className="content">选项卡1内容</div>
+          </Panel>
+          <Panel title="选项卡2">
+          <div className="content">选项卡2内容</div>
+          </Panel>
+        </Tabs>
+        <div className={s.typeBody}>
         </div>
       </div>
       <div className={s.remark}>

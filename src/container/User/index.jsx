@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { Cell, Modal, Input, Button, Toast, FilePicker } from 'zarm';
 import { get, post, imgUrlTrans } from '@/utils';
+import CustomIcon from '@/components/CustomIcon'
 
 import s from './style.module.less';
 
@@ -15,6 +16,20 @@ const User = () => {
   useEffect(() => {
     getUserInfo();
   }, []);
+
+  const handleChangeFile = (event) => {
+    const file = event.target.files[0];
+    const formData = new FormData();
+    formData.append("file", file)
+
+    post('/api/bill/import', formData).then((res) => {
+      const { code = 500 } = res
+      if (code !== 200) {
+        return
+      }
+      Toast.show('导入账本成功');
+    })
+  }
 
   // 获取用户信息
   const getUserInfo = async () => {
@@ -56,25 +71,26 @@ const User = () => {
       hasArrow
       title="用户信息修改"
       onClick={() => navigateTo('/userinfo')}
-      icon={<img style={{ width: 20, verticalAlign: '-7px' }} src="//s.yezgea02.com/1615974766264/gxqm.png" alt="" />}
+      icon={<CustomIcon type="icon-wode" />}
     />
     <Cell
       hasArrow
       title="重制密码"
       onClick={() => navigateTo('/account')}
-      icon={<img style={{ width: 20, verticalAlign: '-7px' }} src="//s.yezgea02.com/1615974766264/zhaq.png" alt="" />}
+      icon={<CustomIcon type="icon-zhongzhi" />}
     />
     <Cell
-      hasArrow
+      className={s.importBtn}
       title="导入账本"
-      onClick={() => navigateTo('/import-bills')}
-      icon={<img style={{ width: 20, verticalAlign: '-7px' }} src="//s.yezgea02.com/1619321650235/mytag.png" alt="" />}
-    />
+      icon={<CustomIcon type="icon-print" />}
+    >
+      <input className={s.importInput} type="file" name="file" onChange={(e) => handleChangeFile(e)} />
+    </Cell>
     <Cell
       hasArrow
       title="关于我们"
       onClick={() => navigateTo('/about')}
-      icon={<img style={{ width: 20, verticalAlign: '-7px' }} src="//s.yezgea02.com/1615975178434/lianxi.png" alt="" />}
+      icon={<CustomIcon type="icon-guanyu_o" />}
     />
    </div>
    <Button className={s.logout} block theme="danger" onClick={logout}>退出登录</Button>

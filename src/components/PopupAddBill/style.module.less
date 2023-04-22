@@ -3,6 +3,7 @@
   background-color: #fff;
   border-top-left-radius: 10px;
   border-top-right-radius: 10px;
+  overscroll-behavior: contain;
   .header {
     padding: 0 16px;
     .close {
@@ -71,22 +72,21 @@
     }
   }
   .type-warp {
-    display: flex;
-    overflow-x: auto;
-    margin: 0 24px;
-    margin-bottom: 20px;
+    padding: 0 24px;
+    margin: 20px 0px;
     * {
       touch-action: pan-x;
     }
     .type-body {
       display: flex;
-      white-space: nowrap;
+      flex-wrap: wrap;
       .type-item {
         display: flex;
         flex-direction: column;
         justify-content: center;
         align-items: center;
-        padding: 16px 12px 10px 12px;
+        width: 20%;
+        height: 60px;
         .iconfont-wrap {
           display: flex;
           justify-content: center;

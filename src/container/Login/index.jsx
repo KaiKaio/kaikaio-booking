@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import { Cell, Input, Button, Checkbox, Toast } from 'zarm';
+import { Cell, Input, Button, Checkbox, Toast, Keyboard } from 'zarm';
 import cx from 'classnames';
 import Captcha from "react-captcha-code";
 import CustomIcon from '@/components/CustomIcon';
