@@ -33,8 +33,11 @@ const Home = () => {
   }, [page, currentSelect, currentTime])
 
   useEffect(async () => {
-    const { data: { list } } = await get('/api/type/list');
+    const { data: { list = [] } } = await get('/api/type/list');
     const iconsMap = {};
+    if (!list?.length) {
+      return
+    }
     list.forEach(item => {
       iconsMap[item.id] = item.icon;
     });

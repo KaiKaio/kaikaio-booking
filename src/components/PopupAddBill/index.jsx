@@ -1,3 +1,6 @@
+/**
+ * 添加账单弹窗
+ */
 import React, { forwardRef, useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Popup, Icon, Toast, Keyboard, Modal, Input  } from 'zarm';
@@ -52,7 +55,10 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
   }, []);
 
   const getList = async () => {
-    const { data: { list } } = await get('/api/type/list');
+    const { data: { list = [] } } = await get('/api/type/list');
+    if (!list?.length) {
+      return
+    }
     const _expense = list.filter(i => i.type == 1); // 支出类型
     const _income = list.filter(i => i.type == 2); // 收入类型
     setExpense(_expense);
