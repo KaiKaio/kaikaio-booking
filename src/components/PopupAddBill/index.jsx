@@ -1,7 +1,7 @@
 /**
  * 添加账单弹窗
  */
-import React, { forwardRef, useEffect, useRef, useState } from 'react';
+import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Popup, Icon, Toast, Keyboard, Modal, Input, Tabs  } from 'zarm';
 import cx from 'classnames'
@@ -57,6 +57,19 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
   useEffect(() => {
     getList()
   }, []);
+
+  const typeList = useMemo(() => {
+    if (payType === 'expense') {
+      return expense
+    } else {
+      return income
+    }
+  }, [payType, expense, income])
+  
+  const typeTabs = useMemo(() => {
+    const tabLength = Math.ceil(typeList.length / 15)
+    return [...new Array(tabLength).keys()]
+  }, [typeList])
 
   const getList = async () => {
     const { data: { list = [] } } = await get('/api/type/list');
@@ -121,6 +134,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
     // amount += value
     setAmount(amount + value)
   }
+
   // 添加账单
   const addBill = async () => {
     if (!amount) {
@@ -153,81 +167,83 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
     if (onReload) onReload();
   }
 
-  return <Popup
-    visible={show}
-    direction="bottom"
-    onMaskClick={() => setShow(false)}
-    destroy={false}
-    mountContainer={() => document.body}
-  >
-    <div className={s.addWrap}>
-      <header className={s.header}>
-        <span className={s.close} onClick={() => setShow(false)}><Icon type="wrong" /></span>
-      </header>
-      <div className={s.filter}>
-        <div className={s.type}>
-          <span onClick={() => changeType('expense')} className={cx({ [s.expense]: true, [s.active]: payType == 'expense' })}>支出</span>
-          <span onClick={() => changeType('income')} className={cx({ [s.income]: true, [s.active]: payType == 'income' })}>收入</span>
+  return (
+    <Popup
+      visible={show}
+      direction="bottom"
+      onMaskClick={() => setShow(false)}
+      destroy={false}
+      mountContainer={() => document.body}
+    >
+      <div className={s.addWrap}>
+        <header className={s.header}>
+          <span className={s.close} onClick={() => setShow(false)}><Icon type="wrong" /></span>
+        </header>
+        <div className={s.filter}>
+          <div className={s.type}>
+            <span onClick={() => changeType('expense')} className={cx({ [s.expense]: true, [s.active]: payType == 'expense' })}>支出</span>
+            <span onClick={() => changeType('income')} className={cx({ [s.income]: true, [s.active]: payType == 'income' })}>收入</span>
+          </div>
+          <div className={s.time} onClick={handleDatePop}>{dayjs(date).format('MM-DD')} <Icon className={s.arrow} type="arrow-bottom" /></div>
         </div>
-        <div className={s.time} onClick={handleDatePop}>{dayjs(date).format('MM-DD')} <Icon className={s.arrow} type="arrow-bottom" /></div>
-      </div>
-      <div className={s.money}>
-        <span className={s.sufix}>¥</span>
-        <span className={cx(s.amount, s.animation)}>{amount}</span>
-      </div>
-      <div className={s.typeWarp}>
-        <Tabs value={value} onChange={setValue} swipeable>
+        <div className={s.money}>
+          <span className={s.sufix}>¥</span>
+          <span className={cx(s.amount, s.animation)}>{amount}</span>
+        </div>
+        <div className={s.typeWarp}>
+          <Tabs value={value} onChange={setValue} swipeable>
+            {
+              typeTabs.map((item) => (
+                <Panel title={`选项卡${item}`} key={item}>
+                  <div className={s.typePanel}>
+                    {
+                      typeList.slice(item * 15, (item + 1) * 15).map(titem => (
+                        <div 
+                          onClick={() => choseType(titem)}
+                          key={titem.id}
+                          className={s.typeItem}
+                        >
+                          <span
+                            className={
+                            cx({
+                              [s.iconfontWrap]: true,
+                              [s.expense]: payType == 'expense',
+                              [s.income]: payType == 'income',
+                              [s.active]: currentType.id == titem.id}
+                            )}
+                          >
+                            <CustomIcon className={s.iconfont} type={titem.icon} />
+                          </span>
+                          <span>{titem.name}</span>
+                        </div>
+                      ))
+                    }
+                  </div>
+                </Panel>
+              ))
+            }
+          </Tabs>
+        </div>
+        <div className={s.remark}>
           {
-            (payType == 'expense' ? expense : income).map(item => (
-              <div 
-                onClick={() => choseType(item)}
-                key={item.id}
-                className={s.typeItem}
-              >
-                <span
-                  className={
-                  cx({
-                    [s.iconfontWrap]: true,
-                    [s.expense]: payType == 'expense',
-                    [s.income]: payType == 'income',
-                    [s.active]: currentType.id == item.id}
-                  )}
-                >
-                  <CustomIcon className={s.iconfont} type={item.icon} />
-                </span>
-                <span>{item.name}</span>
-              </div>
-            ))
+            showRemark ? <Input
+              autoHeight
+              showLength
+              maxLength={50}
+              type="text"
+              rows={3}
+              value={remark}
+              placeholder="请输入备注信息"
+              onChange={(val) => setRemark(val)}
+              onBlur={() => setShowRemark(false)}
+            /> : <span onClick={() => setShowRemark(true)}>{remark || '添加备注'}</span>
           }
-          <Panel title="选项卡1">
-            <div className="content">选项卡1内容</div>
-          </Panel>
-          <Panel title="选项卡2">
-          <div className="content">选项卡2内容</div>
-          </Panel>
-        </Tabs>
-        <div className={s.typeBody}>
         </div>
+        <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} />
+        <PopupDate ref={dateRef} onSelect={selectDate} />
       </div>
-      <div className={s.remark}>
-        {
-          showRemark ? <Input
-            autoHeight
-            showLength
-            maxLength={50}
-            type="text"
-            rows={3}
-            value={remark}
-            placeholder="请输入备注信息"
-            onChange={(val) => setRemark(val)}
-            onBlur={() => setShowRemark(false)}
-          /> : <span onClick={() => setShowRemark(true)}>{remark || '添加备注'}</span>
-        }
-      </div>
-      <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} />
-      <PopupDate ref={dateRef} onSelect={selectDate} />
-    </div>
-  </Popup>
+    </Popup>
+  )
 });
 
 PopupAddBill.propTypes = {

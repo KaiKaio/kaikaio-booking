@@ -72,12 +72,17 @@
     }
   }
   .type-warp {
-    padding: 0 24px;
-    margin: 20px 0px;
+    padding: 0 16px;
+    margin: 12px 0px;
     * {
       touch-action: pan-x;
     }
-    .type-body {
+    :global {
+      .za-tabs__tablist {
+        display: none;
+      }
+    }
+    .type-panel {
       display: flex;
       flex-wrap: wrap;
       .type-item {
@@ -93,8 +98,8 @@
           align-items: center;
           background-color: #f5f5f5;
           border-radius: 50%;
-          width: 30px;
-          height: 30px;
+          width: 40px;
+          height: 40px;
           margin-bottom: 5px;
           .iconfont {
             color: rgba(0, 0, 0, 0.5);
