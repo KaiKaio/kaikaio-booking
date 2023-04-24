@@ -16,6 +16,8 @@ const { Panel } = Tabs;
 
 const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
   const dateRef = useRef()
+  const remarkRef = useRef(null)
+
   const id = detail && detail.id // 外部传进来的账单详情 id
   const [show, setShow] = useState(false);
   const [payType, setPayType] = useState('expense'); // 支出或收入类型
@@ -39,7 +41,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
       })
       setRemark(detail.remark)
       setAmount(detail.amount)
-      setDate(dayjs(Number(detail.date)).$d)
+      setDate(detail.date)
     }
   }, [detail])
 
@@ -159,12 +161,17 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
       setAmount('');
       setPayType('expense');
       setCurrentType(expense[0]);
-      setDate(new Date());
+      // setDate(new Date());
       setRemark('');
       Toast.show('添加成功');
     }
     setShow(false);
     if (onReload) onReload();
+  }
+
+  const handleEnterRemark = () => {
+    setShowRemark(true)
+    remarkRef.current.focus()
   }
 
   return (
@@ -225,8 +232,10 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
           </Tabs>
         </div>
         <div className={s.remark}>
-          {
-            showRemark ? <Input
+          <span onClick={() => handleEnterRemark()}>
+            <Input
+              className={`${s.remarkInput} ${showRemark ? s.show : s.hide}`}
+              ref={remarkRef}
               autoHeight
               showLength
               maxLength={50}
@@ -236,8 +245,9 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
               placeholder="请输入备注信息"
               onChange={(val) => setRemark(val)}
               onBlur={() => setShowRemark(false)}
-            /> : <span onClick={() => setShowRemark(true)}>{remark || '添加备注'}</span>
-          }
+            />
+            { !showRemark && <span>{remark || '添加备注'}</span> }
+          </span>
         </div>
         <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} />
         <PopupDate ref={dateRef} onSelect={selectDate} />

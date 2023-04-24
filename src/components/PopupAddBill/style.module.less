@@ -129,6 +129,14 @@
     padding: 0 24px;
     padding-bottom: 12px;
     color: #4b67e2;
+    .remark-input {
+      opacity: 1;
+      height: auto;
+      &.hide {
+        height: 0px;
+        opacity: 0;
+      }
+    }
     :global {
       .za-input--textarea {
         border: 1px solid #e9e9e9;

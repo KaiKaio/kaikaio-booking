@@ -18,9 +18,20 @@ const Detail = () => {
   const { id } = qs.parse(location.search);
 
   const [detail, setDetail] = useState({});
+  const [icons, setIcons] = useState({});
   
-  useEffect(() => {
+  useEffect(async () => {
     getDetail();
+
+    const { data: { list = [] } } = await get('/api/type/list');
+    const iconsMap = {};
+    if (!list?.length) {
+      return
+    }
+    list.forEach(item => {
+      iconsMap[item.id] = item.icon;
+    });
+    setIcons(iconsMap)
   }, []);
 
   const getDetail = async () => {
@@ -51,7 +62,7 @@ const Detail = () => {
     <div className={s.card}>
       <div className={s.type}>
         <span className={cx({ [s.expense]: detail.pay_type == 1, [s.income]: detail.pay_type == 2 })}>
-          <CustomIcon className={s.iconfont} type={detail.type_id ? typeMap[detail.type_id].icon : 1} />
+          <CustomIcon className={s.iconfont} type={icons[detail.type_id]} />
         </span>
         <span>{ detail.type_name || '' }</span>
       </div>
@@ -63,7 +74,7 @@ const Detail = () => {
       <div className={s.info}>
         <div className={s.time}>
           <span>记录时间</span>
-          <span>{dayjs(Number(detail.date)).format('YYYY-MM-DD HH:mm')}</span>
+          <span>{dayjs(detail.date).format('YYYY-MM-DD')}</span>
         </div>
         <div className={s.remark}>
           <span>备注</span>
