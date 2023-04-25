@@ -22,7 +22,7 @@ const  App = () => {
       <Routes>
         {routes.map(route => <Route exact key={route.path} path={route.path} element={<route.component />} />)}
       </Routes>
-      <NavBar showNav={showNav} />
+      <NavBar showNav={showNav} path={pathname} />
     </>
   </ConfigProvider>;
 };

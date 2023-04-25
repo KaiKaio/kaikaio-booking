@@ -4,19 +4,23 @@ import { TabBar } from "zarm";
 import { useNavigate } from "react-router-dom";
 import CustomIcon from "../CustomIcon";
 import s from "./style.module.less";
+import { useEffect } from "react";
 
-const NavBar = ({ showNav }) => {
+const NavBar = (props) => {
   const [activeKey, setActiveKey] = useState("/");
   const navigateTo = useNavigate();
 
+  useEffect(() => {
+    setActiveKey(props.path);
+  }, [props.path])
+
   const chnageTab = (path) => {
-    setActiveKey(path);
     navigateTo(path);
   };
 
   return (
     <TabBar
-      visible={showNav}
+      visible={props.showNav}
       className={`${s.tab} ${s.safeTab}`}
       activeKey={activeKey}
       onChange={chnageTab}
@@ -42,6 +46,7 @@ const NavBar = ({ showNav }) => {
 
 NavBar.propTypes = {
   showNav: PropTypes.bool,
+  path: PropTypes.string,
 };
 
 export default NavBar;
