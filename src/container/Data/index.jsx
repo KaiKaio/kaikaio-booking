@@ -18,6 +18,19 @@ const  Data = () => {
   const [expenseData, setExpenseData] = useState([]);
   const [incomeData, setIncomeData] = useState([]);
   const [pieType, setPieType] = useState('expense');
+  const [icons, setIcons] = useState({});
+
+  useEffect(async () => {
+    const { data: { list = [] } } = await get('/api/type/list');
+    const iconsMap = {};
+    if (!list?.length) {
+      return
+    }
+    list.forEach(item => {
+      iconsMap[item.id] = item.icon;
+    });
+    setIcons(iconsMap)
+  }, [])
 
   useEffect(() => {
     getData()
@@ -28,15 +41,15 @@ const  Data = () => {
   }, [currentMonth]);
   
   const getData = async () => {
-    const { data } = await get(`/api/bill/data?date=${currentMonth}`);
+    const { data } = await get(`/api/bill/data?start=${dayjs(currentMonth).startOf('month').format('YYYY-MM-DD') + ' 00:00:00'}&end=${dayjs(currentMonth).endOf('month').format('YYYY-MM-DD') + ' 23:59:59'}`);
   
     // 总收支
     setTotalExpense(data.total_expense);
     setTotalIncome(data.total_income);
   
     // 过滤支出和收入
-    const expense_data = data.total_data.filter(item => item.pay_type == 1).sort((a, b) => b.number - a.number); // 过滤出账单类型为支出的项
-    const income_data = data.total_data.filter(item => item.pay_type == 2).sort((a, b) => b.number - a.number); // 过滤出账单类型为收入的项
+    const expense_data = data.total_data.filter(item => item.pay_type === '1').sort((a, b) => b.number - a.number); // 过滤出账单类型为支出的项
+    const income_data = data.total_data.filter(item => item.pay_type === '2').sort((a, b) => b.number - a.number); // 过滤出账单类型为收入的项
     setExpenseData(expense_data);
     setIncomeData(income_data);
     setPieChart(pieType == 'expense' ? expense_data : income_data);
@@ -126,9 +139,7 @@ const  Data = () => {
                 <div className={s.left}>
                   <div className={s.type}>
                     <span className={cx({ [s.expense]: totalType == 'expense', [s.income]: totalType == 'income' })}>
-                      <CustomIcon
-                        type={item.type_id ? typeMap[item.type_id]?.icon : 1}
-                      />
+                      <CustomIcon className={s.iconfont} type={icons[item.type_id]} />
                     </span>
                     <span className={s.name}>{ item.type_name }</span>
                   </div>
