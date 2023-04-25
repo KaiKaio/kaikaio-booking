@@ -125,6 +125,10 @@ const Data = () => {
     setCurrentMonth(item);
   };
 
+  const handleToItemList = (item) => {
+    console.log({ item })
+  };
+
   const list = useMemo(() => {
     if (totalType === "expense") {
       return expenseData;
@@ -170,7 +174,7 @@ const Data = () => {
         </div>
         <div className={s.content}>
           {list.map((item) => (
-            <div key={item.type_id} className={s.item}>
+            <div key={item.type_id} className={s.item} onClick={() => handleToItemList(item)}>
               <div className={s.left}>
                 <div className={s.type}>
                   <span
