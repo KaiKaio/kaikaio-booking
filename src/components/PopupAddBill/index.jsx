@@ -117,23 +117,27 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
   // 监听输入框改变值
   const handleMoney = (value) => {
     value = String(value)
-    if (value == 'close') return 
+    if (value == 'close') return
+
     // 点击是删除按钮时
     if (value == 'delete') {
       let _amount = amount.slice(0, amount.length - 1)
       setAmount(_amount)
       return
     }
+
     // 点击确认按钮时
     if (value == 'ok') {
       addBill()
       return
     }
+  
     // 当输入的值为 '.' 且 已经存在 '.'，则不让其继续字符串相加。
     if (value == '.' && amount.includes('.')) return
+
     // 小数点后保留两位，当超过两位时，不让其字符串继续相加。
     if (value != '.' && amount.includes('.') && amount && amount.split('.')[1].length >= 2) return
-    // amount += value
+
     setAmount(amount + value)
   }
 

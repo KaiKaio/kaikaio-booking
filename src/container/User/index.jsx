@@ -88,7 +88,7 @@ const User = () => {
     </Cell>
     <Cell
       hasArrow
-      title="关于我们"
+      title="关于"
       onClick={() => navigateTo('/about')}
       icon={<CustomIcon type="icon-guanyu_o" />}
     />
