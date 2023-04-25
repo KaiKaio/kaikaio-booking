@@ -3,7 +3,8 @@
  */
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Popup, Icon, Toast, Keyboard, Modal, Input, Tabs  } from 'zarm';
+import { Popup, Icon, Toast, Modal, Input, Tabs  } from 'zarm';
+import Keyboard from '@/components/Keyboard/Keyboard'
 import cx from 'classnames'
 import dayjs from 'dayjs'; 
 import CustomIcon from '../CustomIcon'
@@ -116,6 +117,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
 
   // 监听输入框改变值
   const handleMoney = (value) => {
+    console.log(value, 'Xxx')
     value = String(value)
     if (value == 'close') return
 
