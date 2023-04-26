@@ -151,33 +151,32 @@ const Home = () => {
       </div>
     </div>
     <div className={s.contentWrap}>
-      {
-        list.length ? (
-          <Pull
-            className={s.pullList}
-            ref={pullRef}
-            refresh={{
-              state: refreshing,
-              handler: refreshData,
-            }}
-            load={{
-              state: loading,
-              distance: 200,
-              handler: loadData,
-            }}
-          >
-            {
-              list.map((item, index) => (
-                <BillItem
-                  icons={icons}
-                  bill={item}
-                  key={index}
-                />
-              ))
-            }
-          </Pull>
-        ) : <Empty />
-      }
+      <Pull
+        className={s.pullList}
+        ref={pullRef}
+        refresh={{
+          state: refreshing,
+          handler: refreshData,
+        }}
+        load={{
+          state: loading,
+          distance: 200,
+          handler: loadData,
+        }}
+      >
+        {
+          list.map((item, index) => (
+            <BillItem
+              icons={icons}
+              bill={item}
+              key={index}
+            />
+          ))
+        }
+        {
+          !list?.length && <Empty style={{height: '400px'}} />
+        }
+      </Pull>
     </div>
     <div className={s.add} onClick={addToggle}><CustomIcon type='icon-bianjiwenzhang_huaban' /></div>
     <PopupType ref={typeRef} onSelect={select} />

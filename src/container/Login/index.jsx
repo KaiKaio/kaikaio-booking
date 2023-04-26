@@ -68,33 +68,38 @@ const Login = () => {
       <span className={cx({ [s.avtive]: type == 'register' })} onClick={() => setType('register')}>注册</span>
     </div>
     <div className={s.form}>
-      <List icon={<CustomIcon type="icon-wode" />}>
-        <Input
-          clearable
-          type="text"
-          placeholder="请输入账号"
-          onChange={(event) => setUsername(event.target.value)}
-        />
-      </List>
-      <List icon={<CustomIcon type="icon-password" />}>
-        <Input
-          clearable
-          type="password"
-          placeholder="请输入密码"
-          onChange={(event) => setPassword(event.target.value)}
-        />
-      </List>
-      {
-        type == 'register' ? <List icon={<CustomIcon type="icon-password" />}>
+      <List>
+        <List.Item prefix={ <CustomIcon type="icon-wode" /> }>
           <Input
             clearable
             type="text"
-            placeholder="请输入验证码"
-            onChange={(event) => setVerify(event.target.value)}
+            placeholder="请输入账号"
+            onChange={(event) => setUsername(event.target.value)}
           />
-          <Captcha ref={captchaRef} charNum={4} onChange={handleChange} />
-        </List> : null
-      }
+        </List.Item>
+      
+        <List.Item prefix={<CustomIcon type="icon-password" />}>
+          <Input
+            clearable
+            type="password"
+            placeholder="请输入密码"
+            onChange={(event) => setPassword(event.target.value)}
+          />
+        </List.Item>
+        {
+          type == 'register' ? (
+            <List.Item prefix={<CustomIcon type="icon-password" />}>
+              <Input
+                clearable
+                type="text"
+                placeholder="请输入验证码"
+                onChange={(event) => setVerify(event.target.value)}
+              />
+              <Captcha ref={captchaRef} charNum={4} onChange={handleChange} />
+            </List.Item>
+          ) : null
+        }
+      </List>
     </div>
     <div className={s.operation}>
       {
@@ -107,5 +112,4 @@ const Login = () => {
     </div>
   </div>
 };
-
 export default Login;
