@@ -50,7 +50,7 @@ const Home = () => {
       params: {
         start: dayjs(currentTime).startOf('month').format('YYYY-MM-DD') + ' 00:00:00',
         end: dayjs(currentTime).endOf('month').format('YYYY-MM-DD') + ' 23:59:59',
-        type_id: currentSelect.id || 'all',
+        type_id: currentSelect.id,
         page: page,
         page_size: 999
       }
