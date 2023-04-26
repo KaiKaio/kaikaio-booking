@@ -1,5 +1,5 @@
 import React, { useRef, useState, useCallback, useEffect } from 'react';
-import { Cell, Input, Button, Checkbox, Toast, Keyboard } from 'zarm';
+import { List, Input, Button, Checkbox, Toast, Keyboard } from 'zarm';
 import cx from 'classnames';
 import Captcha from "react-captcha-code";
 import CustomIcon from '@/components/CustomIcon';
@@ -68,32 +68,32 @@ const Login = () => {
       <span className={cx({ [s.avtive]: type == 'register' })} onClick={() => setType('register')}>注册</span>
     </div>
     <div className={s.form}>
-      <Cell icon={<CustomIcon type="icon-wode" />}>
+      <List icon={<CustomIcon type="icon-wode" />}>
         <Input
           clearable
           type="text"
           placeholder="请输入账号"
-          onChange={(value) => setUsername(value)}
+          onChange={(event) => setUsername(event.target.value)}
         />
-      </Cell>
-      <Cell icon={<CustomIcon type="icon-password" />}>
+      </List>
+      <List icon={<CustomIcon type="icon-password" />}>
         <Input
           clearable
           type="password"
           placeholder="请输入密码"
-          onChange={(value) => setPassword(value)}
+          onChange={(event) => setPassword(event.target.value)}
         />
-      </Cell>
+      </List>
       {
-        type == 'register' ? <Cell icon={<CustomIcon type="icon-password" />}>
+        type == 'register' ? <List icon={<CustomIcon type="icon-password" />}>
           <Input
             clearable
             type="text"
             placeholder="请输入验证码"
-            onChange={(value) => setVerify(value)}
+            onChange={(event) => setVerify(event.target.value)}
           />
           <Captcha ref={captchaRef} charNum={4} onChange={handleChange} />
-        </Cell> : null
+        </List> : null
       }
     </div>
     <div className={s.operation}>

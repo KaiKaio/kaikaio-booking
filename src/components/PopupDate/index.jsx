@@ -39,7 +39,7 @@ const PopupDate = forwardRef(({ onSelect, mode = 'date' }, ref) => {
         visible={show}
         value={now}
         mode={mode}
-        onOk={choseMonth}
+        onConfirm={choseMonth}
         onCancel={() => setShow(false)}
       />
     </div>

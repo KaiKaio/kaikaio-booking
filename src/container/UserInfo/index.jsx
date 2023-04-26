@@ -81,7 +81,7 @@ const UserInfo = () => {
             type="text"
             value={signature}
             placeholder="请输入个性签名"
-            onChange={(value) => setSignature(value)}
+            onChange={(event) => setSignature(event.target.value)}
           />
         </div>
       </div>

@@ -249,7 +249,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
               rows={3}
               value={remark}
               placeholder="请输入备注信息"
-              onChange={(val) => setRemark(val)}
+              onChange={(event) => setRemark(event.target.value)}
               onBlur={() => setShowRemark(false)}
             />
             { !showRemark && <span>{remark || '添加备注'}</span> }

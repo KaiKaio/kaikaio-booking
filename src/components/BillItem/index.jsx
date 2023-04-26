@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import dayjs from 'dayjs';
-import { Cell } from 'zarm';
+import { List } from 'zarm';
 import { useNavigate } from 'react-router-dom'
 import CustomIcon from '../CustomIcon';
 import { typeMap } from '@/utils';
@@ -44,7 +44,7 @@ const BillItem = ({ bill, icons }) => {
       </div>
     </div>
     {
-      bill && bill.bills?.sort((a, b) => b.date - a.date).map(item => <Cell
+      bill && bill.bills?.sort((a, b) => b.date - a.date).map(item => <List
         className={s.bill}
         key={item.id}
         onClick={() => goToDetail(item)}
@@ -60,7 +60,7 @@ const BillItem = ({ bill, icons }) => {
         description={<span style={{ color: item.pay_type == 2 ? 'red' : '#39be77' }}>{`${item.pay_type == 1 ? '-' : '+'}${item.amount}`}</span>}
         help={<div>{item.remark ? `| ${item.remark}` : ''}</div>}
       >
-      </Cell>)
+      </List>)
     }
   </div>
 };

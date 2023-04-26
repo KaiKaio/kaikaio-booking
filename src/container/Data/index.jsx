@@ -20,25 +20,25 @@ const Data = () => {
   const [pieType, setPieType] = useState("expense");
   const [icons, setIcons] = useState({});
 
-  useEffect(async () => {
-    const {
-      data: { list = [] },
-    } = await get("/api/type/list");
-    const iconsMap = {};
-    if (!list?.length) {
-      return;
-    }
-    list.forEach((item) => {
-      iconsMap[item.id] = item.icon;
+  useEffect(() => {
+    get("/api/type/list").then((res) => {
+      const { data: { list = [] } } = res
+      const iconsMap = {};
+      if (!list?.length) {
+        return;
+      }
+      list.forEach((item) => {
+        iconsMap[item.id] = item.icon;
+      });
+      setIcons(iconsMap);
     });
-    setIcons(iconsMap);
   }, []);
 
   useEffect(() => {
     getData();
     return () => {
       // 每次组件卸载的时候，需要释放图表实例。clear 只是将其清空不会释放。
-      proportionChart.dispose();
+      proportionChart?.dispose();
     };
   }, [currentMonth]);
 

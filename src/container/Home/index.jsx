@@ -14,6 +14,8 @@ import { get } from '@/utils'
 import s from './style.module.less'
 
 const Home = () => {
+  const pullRef = useRef();
+
   const typeRef = useRef(); // 账单类型 ref
   const monthRef = useRef(); // 月份筛选 ref
   const addRef = useRef(); // 添加账单 ref
@@ -32,16 +34,18 @@ const Home = () => {
     getBillList() // 初始化
   }, [page, currentSelect, currentTime])
 
-  useEffect(async () => {
-    const { data: { list = [] } } = await get('/api/type/list');
-    const iconsMap = {};
-    if (!list?.length) {
-      return
-    }
-    list.forEach(item => {
-      iconsMap[item.id] = item.icon;
+  useEffect(() => {
+    get('/api/type/list').then((res) => {
+      const { data: { list = [] } } = res
+      const iconsMap = {};
+      if (!list?.length) {
+        return
+      }
+      list.forEach(item => {
+        iconsMap[item.id] = item.icon;
+      });
+      setIcons(iconsMap)
     });
-    setIcons(iconsMap)
   }, [])
 
   const getBillList = async () => {
@@ -148,29 +152,31 @@ const Home = () => {
     </div>
     <div className={s.contentWrap}>
       {
-        list.length ? <Pull
-          animationDuration={200}
-          stayTime={400}
-          refresh={{
-            state: refreshing,
-            handler: refreshData
-          }}
-          load={{
-            state: loading,
-            distance: 200,
-            handler: loadData
-          }}
-        >
-          {
-            list.map((item, index) => (
-              <BillItem
-                icons={icons}
-                bill={item}
-                key={index}
-              />
-            ))
-          }
-        </Pull> : <Empty />
+        list.length ? (
+          <Pull
+            className={s.pullList}
+            ref={pullRef}
+            refresh={{
+              state: refreshing,
+              handler: refreshData,
+            }}
+            load={{
+              state: loading,
+              distance: 200,
+              handler: loadData,
+            }}
+          >
+            {
+              list.map((item, index) => (
+                <BillItem
+                  icons={icons}
+                  bill={item}
+                  key={index}
+                />
+              ))
+            }
+          </Pull>
+        ) : <Empty />
       }
     </div>
     <div className={s.add} onClick={addToggle}><CustomIcon type='icon-bianjiwenzhang_huaban' /></div>

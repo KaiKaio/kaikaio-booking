@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Cell, Modal, Input, Button, Toast, FilePicker } from 'zarm';
+import { List, Modal, Input, Button, Toast, FilePicker } from 'zarm';
 import { get, post, imgUrlTrans } from '@/utils';
 import CustomIcon from '@/components/CustomIcon'
 
@@ -67,31 +67,33 @@ const User = () => {
       <img className={s.avatar} style={{ width: 60, height: 60, borderRadius: 8 }} src={avatar} alt="" />
    </div>
    <div className={s.content}>
-    <Cell
-      hasArrow
-      title="用户信息修改"
-      onClick={() => navigateTo('/userinfo')}
-      icon={<CustomIcon type="icon-wode" />}
-    />
-    <Cell
-      hasArrow
-      title="重制密码"
-      onClick={() => navigateTo('/account')}
-      icon={<CustomIcon type="icon-zhongzhi" />}
-    />
-    <Cell
-      className={s.importBtn}
-      title="导入账本"
-      icon={<CustomIcon type="icon-print" />}
-    >
-      <input className={s.importInput} type="file" name="file" onChange={(e) => handleChangeFile(e)} />
-    </Cell>
-    <Cell
-      hasArrow
-      title="关于"
-      onClick={() => navigateTo('/about')}
-      icon={<CustomIcon type="icon-guanyu_o" />}
-    />
+    <List>
+      <List.Item
+        hasArrow
+        title="用户信息修改"
+        onClick={() => navigateTo('/userinfo')}
+        prefix={ <CustomIcon type="icon-wode" /> }
+      />
+      <List.Item
+        hasArrow
+        title="重制密码"
+        onClick={() => navigateTo('/account')}
+        prefix={ <CustomIcon type="icon-zhongzhi" /> }
+      />
+      <List.Item
+        className={s.importBtn}
+        title="导入账本"
+        prefix={ <CustomIcon type="icon-print" /> }
+      >
+        <input className={s.importInput} type="file" name="file" onChange={(e) => handleChangeFile(e)} />
+      </List.Item>
+      <List.Item
+        hasArrow
+        title="关于"
+        onClick={() => navigateTo('/about')}
+        prefix={ <CustomIcon type="icon-guanyu_o" /> }
+      />
+      </List>
    </div>
    <Button className={s.logout} block theme="danger" onClick={logout}>退出登录</Button>
    <Modal
@@ -113,7 +115,7 @@ const User = () => {
         rows={3}
         value={signature}
         placeholder="请输入备注信息"
-        onChange={(val) => setSignature(val)}
+        onChange={(event) => setSignature(event.target.value)}
         />
     </Modal>
   </div>
