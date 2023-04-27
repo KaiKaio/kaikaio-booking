@@ -21,8 +21,9 @@ const NavBar = (props) => {
 
   return (
     <TabBar
-      visible={props.showNav}
-      className={cx({ [s.tab]: true, [s.safeTab]: true })}
+      safeArea
+      style={{display: props.showNav ? 'block' : 'none' }}
+      className={cx({ [s.tab]: true })}
       activeKey={activeKey}
       onChange={chnageTab}
     >

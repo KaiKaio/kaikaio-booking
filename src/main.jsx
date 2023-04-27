@@ -5,6 +5,7 @@ import {
 } from "react-router-dom";
 import 'lib-flexible/flexible'
 import './index.css'
+import 'zarm/dist/zarm.css';
 import App from './App'
 
 const container = document.getElementById('root');

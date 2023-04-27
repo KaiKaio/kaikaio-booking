@@ -62,7 +62,6 @@ const Login = () => {
     document.title = type == 'login' ? '登录' : '注册';
   }, [type])
   return <div className={s.auth}>
-    <div className={s.head} />
     <div className={s.tab}>
       <span className={cx({ [s.avtive]: type == 'login' })} onClick={() => setType('login')}>登录</span>
       <span className={cx({ [s.avtive]: type == 'register' })} onClick={() => setType('register')}>注册</span>
