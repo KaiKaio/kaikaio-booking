@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
+import cx from 'classnames'
 import { TabBar } from "zarm";
 import { useNavigate } from "react-router-dom";
 import CustomIcon from "../CustomIcon";
@@ -21,8 +22,7 @@ const NavBar = (props) => {
   return (
     <TabBar
       visible={props.showNav}
-      className={s.tab}
-      safeArea
+      className={cx({ [s.tab]: true, [s.safeTab]: true })}
       activeKey={activeKey}
       onChange={chnageTab}
     >
