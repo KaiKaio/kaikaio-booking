@@ -43,25 +43,30 @@ const BillItem = ({ bill, icons }) => {
         </span>
       </div>
     </div>
-    {
-      bill && bill.bills?.sort((a, b) => b.date - a.date).map(item => <List
-        className={s.bill}
-        key={item.id}
-        onClick={() => goToDetail(item)}
-        title={
-          <>
-            <CustomIcon
-              className={s.itemIcon}
-              type={icons[item.type_id]}
-            />
-            <span> { item.type_name }</span>
-          </>
-        }
-        description={<span style={{ color: item.pay_type == 2 ? 'red' : '#39be77' }}>{`${item.pay_type == 1 ? '-' : '+'}${item.amount}`}</span>}
-        help={<div>{item.remark ? `| ${item.remark}` : ''}</div>}
-      >
-      </List>)
-    }
+    <List>
+      {
+        bill && bill.bills?.sort((a, b) => b.date - a.date).map(item => 
+          <List.Item
+            className={s.bill}
+            key={item.id}
+            hasArrow={false}
+            onClick={() => goToDetail(item)}
+            title={
+              <>
+                <CustomIcon
+                  className={s.itemIcon}
+                  type={icons[item.type_id]}
+                />
+                <span> { item.type_name }</span>
+              </>
+            }
+            suffix={<span style={{ color: item.pay_type == 2 ? 'red' : '#39be77' }}>{`${item.pay_type == 1 ? '-' : '+'}${item.amount}`}</span>}
+            description={<div>{item.remark ? `| ${item.remark}` : ''}</div>}
+          >
+          </List.Item>
+        )
+      }
+    </List>
   </div>
 };
 
