@@ -169,7 +169,7 @@ const Home = () => {
             <BillItem
               icons={icons}
               bill={item}
-              key={index}
+              key={item.date}
             />
           ))
         }
