@@ -29,6 +29,7 @@ const Home = () => {
   const [refreshing, setRefreshing] = useState(REFRESH_STATE.normal); // 下拉刷新状态
   const [loading, setLoading] = useState(LOAD_STATE.normal); // 上拉加载状态
   const [icons, setIcons] = useState({}); // 上拉加载状态
+  const [detail, setDetail] = useState({});
 
   useEffect(() => {
     getBillList() // 初始化
@@ -167,6 +168,9 @@ const Home = () => {
         {
           list.map((item, index) => (
             <BillItem
+              setDetail={setDetail}
+              onReload={refreshData}
+              addRef={addRef}
               icons={icons}
               bill={item}
               key={item.date}
@@ -181,7 +185,7 @@ const Home = () => {
     <div className={s.add} onClick={addToggle}><CustomIcon type='icon-bianjiwenzhang_huaban' /></div>
     <PopupType ref={typeRef} onSelect={select} />
     <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
-    <PopupAddBill ref={addRef} onReload={refreshData} />
+    <PopupAddBill ref={addRef} detail={detail} onReload={refreshData} setDetail={setDetail} />
   </div>
 };
 

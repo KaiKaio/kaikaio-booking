@@ -14,7 +14,7 @@ import s from './style.module.less';
 
 const { Panel } = Tabs;
 
-const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
+const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   const dateRef = useRef()
   const remarkRef = useRef(null)
 
@@ -160,6 +160,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
       // 如果有 id 需要调用详情更新接口
       const result = await post('/api/bill/update', params);
       Toast.show('修改成功');
+      setDetail({})
     } else {
       const result = await post('/api/bill/add', params);
       setAmount('');
