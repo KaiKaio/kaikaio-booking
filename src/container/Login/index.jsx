@@ -3,6 +3,7 @@ import { List, Input, Button, Checkbox, Toast, Keyboard } from 'zarm';
 import cx from 'classnames';
 import Captcha from "react-captcha-code";
 import CustomIcon from '@/components/CustomIcon';
+import LoginTitleIcon from '@/assets/login-title-icon.png';
 import { post } from '@/utils'
 
 import s from './style.module.less';
@@ -62,13 +63,14 @@ const Login = () => {
     document.title = type == 'login' ? '登录' : '注册';
   }, [type])
   return <div className={s.auth}>
+    <img className={s.loginTitleIcon} src={LoginTitleIcon} alt="LoginTitleIcon" />
     <div className={s.tab}>
       <span className={cx({ [s.avtive]: type == 'login' })} onClick={() => setType('login')}>登录</span>
       <span className={cx({ [s.avtive]: type == 'register' })} onClick={() => setType('register')}>注册</span>
     </div>
     <div className={s.form}>
       <List>
-        <List.Item prefix={ <CustomIcon type="icon-wode" /> }>
+        <List.Item className={s.inputWrap} prefix={ <CustomIcon type="icon-wode" /> }>
           <Input
             clearable
             type="text"
@@ -77,7 +79,7 @@ const Login = () => {
           />
         </List.Item>
       
-        <List.Item prefix={<CustomIcon type="icon-password" />}>
+        <List.Item className={s.inputWrap} prefix={<CustomIcon type="icon-password" />}>
           <Input
             clearable
             type="password"
@@ -87,7 +89,7 @@ const Login = () => {
         </List.Item>
         {
           type == 'register' ? (
-            <List.Item prefix={<CustomIcon type="icon-password" />}>
+            <List.Item className={s.inputWrap} prefix={<CustomIcon type="icon-password" />}>
               <Input
                 clearable
                 type="text"
@@ -101,13 +103,13 @@ const Login = () => {
       </List>
     </div>
     <div className={s.operation}>
-      {
-        type == 'register' ? <div className={s.agree}>
-          <Checkbox />
-          <label className="text-light">阅读并同意<a>《掘掘手札条款》</a></label>
-        </div> : null
-      }
-      <Button onClick={onSubmit} block theme="primary">{type == 'login' ? '登录' : '注册'}</Button>
+      <Button
+        onClick={onSubmit}
+        size={'sm'}
+        block
+        ghost
+        shadow
+      >{type == 'login' ? '登 录' : '注 册'}</Button>
     </div>
   </div>
 };

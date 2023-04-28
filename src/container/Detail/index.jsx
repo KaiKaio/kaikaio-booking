@@ -20,18 +20,20 @@ const Detail = () => {
   const [detail, setDetail] = useState({});
   const [icons, setIcons] = useState({});
   
-  useEffect(async () => {
+  useEffect(() => {
     getDetail();
 
-    const { data: { list = [] } } = await get('/api/type/list');
-    const iconsMap = {};
-    if (!list?.length) {
-      return
-    }
-    list.forEach(item => {
-      iconsMap[item.id] = item.icon;
+    get('/api/type/list').then((res) => {
+      const { data: { list = [] } } = res
+      const iconsMap = {};
+      if (!list?.length) {
+        return
+      }
+      list.forEach(item => {
+        iconsMap[item.id] = item.icon;
+      });
+      setIcons(iconsMap)
     });
-    setIcons(iconsMap)
   }, []);
 
   const getDetail = async () => {

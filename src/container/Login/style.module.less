@@ -1,7 +1,15 @@
 .auth {
   min-height: 100vh;
   background: url('@/assets/login-background.jpg') center center/cover no-repeat;
+  .login-title-icon {
+    width: 75%;
+    display: block;
+    object-fit: contain;
+    margin: 0px auto 0px;
+    padding: 60px 0px 0px;
+  }
   .head {
+    width: 100%;
     height: 200px;
       background-size: 120%;
       border-bottom-left-radius: 12px;
@@ -12,7 +20,8 @@
       }
   }
   .tab {
-    color: #597fe7;
+    width: 100%;
+    color: #fff;
     padding: 30px 24px 10px 24px;
     > span {
       margin-right: 10px;
@@ -20,13 +29,29 @@
       font-weight: bold;
       &.avtive {
         font-size: 20px;
-        border-bottom: 2PX solid #597fe7;
+        border-bottom: 2px solid #fff;
         padding-bottom: 6px;
       }
     }
   }
   .form {
+    width: 100%;
     padding: 0 6px;
+    .inputWrap {
+      background-color: transparent;
+      color: #fff;
+      opacity: .9;
+      :global {
+        input {
+          color: #fff;
+          opacity: .9;
+        }
+        input::-webkit-input-placeholder{
+          color: #fff;
+          opacity: .9;
+        }
+      }
+    }
     :global {
       .za-List {
         background-color: transparent;
@@ -37,6 +62,7 @@
     }
   }
   .operation {
+    width: 100%;
     padding: 10px 24px 0 24px;
     .agree {
       display: flex;

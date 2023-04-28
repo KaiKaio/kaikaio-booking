@@ -238,13 +238,15 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload }, ref) => {
         <div className={s.remark}>
           <span onClick={() => handleEnterRemark()}>
             <Input
-              className={`${s.remarkInput} ${showRemark ? s.show : s.hide}`}
+              className={cx({
+                [s.remarkInput]: true,
+                [s.hide]: !showRemark
+              })}
               ref={remarkRef}
-              autoHeight
               showLength
               maxLength={50}
               type="text"
-              rows={3}
+              rows={1}
               value={remark}
               placeholder="请输入备注信息"
               onChange={(event) => setRemark(event.target.value)}
