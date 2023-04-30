@@ -45,6 +45,31 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
     }
   }, [detail])
 
+  useEffect(() => {
+    if (!showRemark) {
+      return
+    }
+    setTimeout(() => {
+      // IOS 键盘收起后操作
+      // 微信浏览器版本6.7.4+IOS12会出现键盘收起后，视图被顶上去了没有下来
+      const wechatInfoRe = /MicroMessenger\/([\d\.]+)/i;
+      const wechatInfo = wechatInfoRe.exec(window?.navigator?.userAgent);
+      const wechatVersion = wechatInfo && wechatInfo.length > 1 && wechatInfo[1];
+
+      const osInfoRe = /OS (\d+)_(\d+)_?(\d+)?/i;
+      const osInfo = osInfoRe.exec(navigator.appVersion);
+      const osVersion = osInfo && osInfo.length > 1 && osInfo[1];
+
+      if (!wechatVersion || !osVersion) {
+        return;
+      }
+      const height = Math.max(document.body.clientHeight, document.documentElement.clientHeight);
+      if (Number(wechatVersion.replace(/\./g, '')) >= 674 && Number(osVersion) >= 12) {
+        window.scrollTo(0, height);
+      }
+    }, 200)
+  }, [showRemark])
+
   if (ref) {
     ref.current = {
       show: () => {
@@ -256,7 +281,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
             { !showRemark && <span>{remark || '添加备注'}</span> }
           </span>
         </div>
-        <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} />
+        { !showRemark && <Keyboard type="price" onKeyClick={(value) => handleMoney(value)} /> }
         <PopupDate ref={dateRef} onSelect={selectDate} />
       </div>
     </Popup>
