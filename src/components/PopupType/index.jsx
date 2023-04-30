@@ -11,7 +11,7 @@ import s from './style.module.less'
 
 const PopupType = forwardRef(({ onSelect }, ref) => {
   const [show, setShow] = useState(false);
-  const [active, setActive] = useState('all');
+  const [active, setActive] = useState('');
   const [expense, setExpense] = useState([]);
   const [income, setIncome] = useState([]);
 
@@ -57,7 +57,7 @@ const PopupType = forwardRef(({ onSelect }, ref) => {
         <Icon type="wrong" className={s.cross} onClick={() => setShow(false)} />
       </div>
       <div className={s.content}>
-        <div onClick={() => choseType({ id: 'all' })} className={cx({ [s.all]: true, [s.active]: active == 'all' })}>全部类型</div>
+        <div onClick={() => choseType({ id: '' })} className={cx({ [s.all]: true, [s.active]: active === '' })}>全部类型</div>
         <div className={s.title}>支出</div>
         <div className={s.expenseWrap}>
           {
