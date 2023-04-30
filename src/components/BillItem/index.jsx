@@ -57,6 +57,7 @@ const BillItem = ({ bill, icons, onReload, setDetail, addRef }) => {
       {
         bill && bill.bills?.sort((a, b) => b.date - a.date).map(item => 
           <SwipeAction
+            className={s.billSwipe}
             key={item.id}
             rightActions={[
               {

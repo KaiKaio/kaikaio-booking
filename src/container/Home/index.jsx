@@ -57,35 +57,38 @@ const Home = () => {
         end: dayjs(currentTime).endOf('month').format('YYYY-MM-DD') + ' 23:59:59',
         type_id: currentSelect.id,
         page: page,
-        page_size: 999
+        page_size: 20
       }
     })
 
     // 下拉刷新，重制数据
-    if (page == 1) {
+    if (page === 1) {
       setList(data.list);
-    } else {
-      setList(list.concat(data.list));
+    } else { // 上拉加载，拼接数据
+      const concatList = [...list, ...data.list]
+      // 请求返回的第一条数据与本地的最后一条数据 Date 字段相同，则合并此 ITEM
+      const listMap = new Map()
+      concatList.forEach((item) => {
+        const localDateItem = listMap.get(item.date)
+        if (localDateItem) {
+          listMap.set(item.date, [...localDateItem, ...item.bills]);
+        } else {
+          listMap.set(item.date, item.bills);
+        }
+      })
+      
+      const distinctList = []
+      listMap.forEach((value, key) => {
+        distinctList.push({
+          date: key,
+          bills: value
+        })
+      })
+      setList(distinctList);
     }
 
-    // 计算总支出
-    const expenseTotal = data.list.reduce((total, item) => {
-      const itemSum = item?.bills.reduce((CTotal, CItem) => {
-        return CTotal + (CItem.pay_type === '1' ? (CItem.amount / 1) : 0)
-      }, 0)
-      return total + itemSum
-    }, 0)
-    
-    // // 计算总支出
-    const incomeTotal = data.list.reduce((total, item) => {
-      const itemSum = item?.bills.reduce((CTotal, CItem) => {
-        return CTotal + (CItem.pay_type === '2' ? (CItem.amount / 1) : 0)
-      }, 0)
-      return total + itemSum
-    }, 0)
-
-    setTotalExpense(expenseTotal.toFixed(2));
-    setTotalIncome(incomeTotal.toFixed(2));
+    setTotalExpense(data.totalExpense.toFixed(2));
+    setTotalIncome(data.totalIncome.toFixed(2));
   
     setTotalPage(data.totalPage);
     // 上滑加载状态
