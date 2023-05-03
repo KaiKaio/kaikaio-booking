@@ -6,10 +6,13 @@ import { get, typeMap } from "@/utils";
 import CustomIcon from "@/components/CustomIcon";
 import PopupDate from "@/components/PopupDate";
 import s from "./style.module.less";
+import { useNavigate } from "react-router-dom";
 
 let proportionChart = null;
 
 const Data = () => {
+  const navigateTo = useNavigate();
+
   const monthRef = useRef();
   const [totalType, setTotalType] = useState("expense");
   const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
@@ -126,7 +129,7 @@ const Data = () => {
   };
 
   const handleToItemList = (item) => {
-    console.log({ item })
+    navigateTo(`/detail?type_id=${item.type_id}`);
   };
 
   const list = useMemo(() => {
@@ -142,7 +145,7 @@ const Data = () => {
       <div className={s.total}>
         <div className={s.time} onClick={monthShow}>
           <span>{currentMonth}</span>
-          <Icon className={s.date} type="date" />
+          <CustomIcon className={s.date} type="icon-rili" />
         </div>
         <div className={s.title}>共支出</div>
         <div className={s.expense}>¥{totalExpense}</div>

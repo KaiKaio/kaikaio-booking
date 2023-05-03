@@ -28,7 +28,7 @@ const Home = () => {
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [refreshing, setRefreshing] = useState(REFRESH_STATE.normal); // 下拉刷新状态
   const [loading, setLoading] = useState(LOAD_STATE.normal); // 上拉加载状态
-  const [icons, setIcons] = useState({}); // 上拉加载状态
+  const [icons, setIcons] = useState({});
   const [detail, setDetail] = useState({});
 
   useEffect(() => {
@@ -154,6 +154,7 @@ const Home = () => {
         </div>
       </div>
     </div>
+
     <div className={s.contentWrap}>
       <Pull
         className={s.pullList}
@@ -185,6 +186,7 @@ const Home = () => {
         }
       </Pull>
     </div>
+
     <div className={s.add} onClick={addToggle}><CustomIcon type='icon-bianjiwenzhang_huaban' /></div>
     <PopupType ref={typeRef} onSelect={select} />
     <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
