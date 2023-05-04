@@ -24,7 +24,6 @@ const Detail = () => {
   const { type_id } = qs.parse(location.search); // TPYE_ID
 
   const [typeItem, setTypeItem] = useState({});
-  const [detailList, setDetailList] = useState({});
   const [navDates, setNavDates] = useState([]);
   const [totalExpense, setTotalExpense] = useState(0); // 总支出
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
@@ -41,10 +40,6 @@ const Detail = () => {
   const monthShow = () => {
     monthRef.current && monthRef.current.show();
   };
-
-  const handleDateItem = (item) => {
-    
-  }
 
   const localGenerateDates = (result) => {
     if (!result) {
@@ -118,8 +113,8 @@ const Detail = () => {
       setList(distinctList);
     }
 
-    setTotalExpense(data.totalExpense.toFixed(2));
-    setTotalIncome(data.totalIncome.toFixed(2));
+    setTotalExpense(data?.totalExpense?.toFixed(2));
+    setTotalIncome(data?.totalIncome?.toFixed(2));
   
     setTotalPage(data.totalPage);
     // 上滑加载状态
@@ -203,13 +198,12 @@ const Detail = () => {
           navDates.map((item, index) => <div className={cx({ [s.dateItem]: true, [s.active]: activeDate === item })} key={item + index} onClick={() => setActiveDate(item)}>{ item }</div>)
         }
       </div>
-      
 
-      {/* {
-        typeItem?.type == 1
-          ? <div className={cx(s.amount, s.expense)}>￥{ detailList.totalExpense?.toFixed(2) }</div>
-          : <div className={cx(s.amount, s.incom)}>￥{ detailList.totalIncome?.toFixed(2) }</div>
-      } */}
+      {
+        typeItem?.type === '1'
+          ? <div className={cx(s.amount, s.expense)}>￥{ totalExpense }</div>
+          : <div className={cx(s.amount, s.incom)}>￥{ totalIncome }</div>
+      }
     </div>
 
     <div className={s.contentWrap}>
