@@ -5,27 +5,25 @@ import React, { forwardRef, useEffect, useState } from 'react'
 import PropTypes from 'prop-types'
 import { Popup, Icon } from 'zarm'
 import cx from 'classnames'
-import { get } from '@/utils'
+import { useSelector } from 'react-redux'
 
 import s from './style.module.less'
 
 const PopupType = forwardRef(({ onSelect }, ref) => {
+  const types = useSelector((state) => state.types.types)
+
   const [show, setShow] = useState(false);
   const [active, setActive] = useState('');
   const [expense, setExpense] = useState([]);
   const [income, setIncome] = useState([]);
 
   useEffect(() => {
-    (async () => {
-      // 请求标签接口放在弹窗内，这个弹窗可能会被复用，所以请求如果放在外面，会造成代码冗余。
-      const { data: { list = [] } } = await get('/api/type/list')
-      if (!list?.length) {
-        return
-      }
-      setExpense(list.filter(i => i.type == 1))
-      setIncome(list.filter(i => i.type == 2))
-    })()
-  }, [])
+    if (!types?.length) {
+      return
+    }
+    setExpense(types.filter(i => i.type == 1))
+    setIncome(types.filter(i => i.type == 2))
+  }, [types])
 
   if (ref) {
     ref.current = {

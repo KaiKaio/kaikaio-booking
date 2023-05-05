@@ -2,7 +2,8 @@ import React, { useEffect, useRef, useState, useMemo } from "react";
 import { Icon, Progress } from "zarm";
 import cx from "classnames";
 import dayjs from "dayjs";
-import { get, typeMap } from "@/utils";
+import { get } from "@/utils";
+import { useSelector } from 'react-redux'
 import CustomIcon from "@/components/CustomIcon";
 import PopupDate from "@/components/PopupDate";
 import s from "./style.module.less";
@@ -12,6 +13,7 @@ let proportionChart = null;
 
 const Data = () => {
   const navigateTo = useNavigate();
+  const types = useSelector((state) => state.types.types)
 
   const monthRef = useRef();
   const [totalType, setTotalType] = useState("expense");
@@ -24,18 +26,15 @@ const Data = () => {
   const [icons, setIcons] = useState({});
 
   useEffect(() => {
-    get("/api/type/list").then((res) => {
-      const { data: { list = [] } } = res
-      const iconsMap = {};
-      if (!list?.length) {
-        return;
-      }
-      list.forEach((item) => {
-        iconsMap[item.id] = item.icon;
-      });
-      setIcons(iconsMap);
+    const iconsMap = {};
+    if (!types?.length) {
+      return;
+    }
+    types.forEach((item) => {
+      iconsMap[item.id] = item.icon;
     });
-  }, []);
+    setIcons(iconsMap);
+  }, [types]);
 
   useEffect(() => {
     getData();

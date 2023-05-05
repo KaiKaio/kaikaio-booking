@@ -4,6 +4,7 @@ import PopupDate from "@/components/PopupDate";
 import { Pull } from 'zarm';
 import Empty from '@/components/Empty'
 import qs from 'query-string';
+import { useSelector } from 'react-redux'
 import axios from '@/utils/axios'
 import BillItem from '@/components/BillItem'
 import { REFRESH_STATE, LOAD_STATE } from '@/utils'
@@ -16,6 +17,8 @@ import PopupAddBill from '@/components/PopupAddBill'
 import s from './style.module.less'
 
 const Detail = () => {
+  const types = useSelector((state) => state.types.types)
+
   const monthRef = useRef();
   const pullRef = useRef();
   const dateListRef = useRef();
@@ -123,29 +126,26 @@ const Detail = () => {
   }
   
   useEffect(() => {
-    axios({ url: '/api/type/list' }).then((res) => {
-      const { data: { list = [] } } = res
-      if (!list?.length) {
-        return
-      }
+    if (!types?.length) {
+      return
+    }
 
-      const iconsMap = {};
-      if (!list?.length) {
-        return
-      }
-      list.forEach(item => {
-        iconsMap[item.id] = item.icon;
-      });
-      setIcons(iconsMap)
+    const iconsMap = {};
+    if (!types?.length) {
+      return
+    }
+    types.forEach(item => {
+      iconsMap[item.id] = item.icon;
+    });
+    setIcons(iconsMap)
 
-      list.find(item => item.id === type_id);
-      const result = list.find(item => `${item.id}` === type_id);
-      setTypeItem(result)
+    types.find(item => item.id === type_id);
+    const result = types.find(item => `${item.id}` === type_id);
+    setTypeItem(result)
 
-      return axios({
-        url: '/api/bill/getEarliestItemDate',
-        params: { type_id: result.id }
-      })
+    axios({
+      url: '/api/bill/getEarliestItemDate',
+      params: { type_id: result.id }
     }).then((res) => {
       const { data = '' } = res;
       const dates = localGenerateDates(data)
@@ -153,7 +153,7 @@ const Detail = () => {
       
       setActiveDate(dates[dates.length - 3])
     });
-  }, []);
+  }, [types]);
 
   useEffect(() => {
     if (!activeDate) {

@@ -4,17 +4,18 @@ import dayjs from 'dayjs'
 import PopupType from '@/components/PopupType'
 import PopupDate from '@/components/PopupDate'
 import PopupAddBill from '@/components/PopupAddBill'
+import { useSelector } from 'react-redux'
 import BillItem from '@/components/BillItem'
 import Empty from '@/components/Empty'
 import CustomIcon from '@/components/CustomIcon'
 import { REFRESH_STATE, LOAD_STATE } from '@/utils'
 import axios from '@/utils/axios'
-import { get } from '@/utils'
 
 import s from './style.module.less'
 
 const Home = () => {
   const pullRef = useRef();
+  const types = useSelector((state) => state.types.types)
 
   const typeRef = useRef(); // 账单类型 ref
   const monthRef = useRef(); // 月份筛选 ref
@@ -36,18 +37,15 @@ const Home = () => {
   }, [page, currentSelect, currentTime])
 
   useEffect(() => {
-    get('/api/type/list').then((res) => {
-      const { data: { list = [] } } = res
-      const iconsMap = {};
-      if (!list?.length) {
-        return
-      }
-      list.forEach(item => {
-        iconsMap[item.id] = item.icon;
-      });
-      setIcons(iconsMap)
+    const iconsMap = {};
+    if (!types?.length) {
+      return
+    }
+    types.forEach(item => {
+      iconsMap[item.id] = item.icon;
     });
-  }, [])
+    setIcons(iconsMap)
+  }, [types])
 
   const getBillList = async () => {
     const { data } = await axios({

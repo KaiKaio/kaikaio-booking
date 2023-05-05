@@ -5,16 +5,19 @@ import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Popup, Icon, Toast, Input, Tabs, Keyboard  } from 'zarm';
 import cx from 'classnames'
-import dayjs from 'dayjs'; 
+import dayjs from 'dayjs';
+import { useSelector } from 'react-redux'
 import CustomIcon from '../CustomIcon'
 import PopupDate from '../PopupDate'
-import { get, typeMap, post } from '@/utils'
+import { post } from '@/utils'
 
 import s from './style.module.less';
 
 const { Panel } = Tabs;
 
 const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
+  const types = useSelector((state) => state.types.types)
+
   const dateRef = useRef()
   const remarkRef = useRef(null)
 
@@ -82,8 +85,20 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   };
 
   useEffect(() => {
-    getList()
-  }, []);
+    if (!types?.length) {
+      return
+    }
+    
+    const _expense = types.filter(i => i.type == 1); // 支出类型
+    const _income = types.filter(i => i.type == 2); // 收入类型
+
+    setExpense(_expense);
+    setIncome(_income);
+
+    if (!id) {
+      setCurrentType(_expense[0]);
+    };
+  }, [types]);
 
   const typeList = useMemo(() => {
     if (payType === 'expense') {
@@ -97,21 +112,6 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
     const tabLength = Math.ceil(typeList.length / 15)
     return [...new Array(tabLength).keys()]
   }, [typeList])
-
-  const getList = async () => {
-    const { data: { list = [] } } = await get('/api/type/list');
-    if (!list?.length) {
-      return
-    }
-    const _expense = list.filter(i => i.type == 1); // 支出类型
-    const _income = list.filter(i => i.type == 2); // 收入类型
-    setExpense(_expense);
-    setIncome(_income);
-      // 没有 id 的情况下，说明是新建账单。
-    if (!id) {
-      setCurrentType(_expense[0]);
-    };
-  }
 
   // 切换收入还是支出
   const changeType = (type) => {
