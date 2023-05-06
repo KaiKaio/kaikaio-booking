@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { List, Modal, Input, Button, Toast, FilePicker } from 'zarm';
-import { get, post, imgUrlTrans } from '@/utils';
-import CustomIcon from '@/components/CustomIcon'
+import { List, Modal, Input, Button, Toast } from 'zarm';
+import axios from '@/utils/axios'
+import CustomIcon from '@/components/CustomIcon';
 
 import s from './style.module.less';
 
@@ -22,7 +22,11 @@ const User = () => {
     const formData = new FormData();
     formData.append("file", file)
 
-    post('/api/bill/import', formData).then((res) => {
+    axios({
+      url: '/api/bill/import',
+      method: 'POST',
+      data: formData
+    }).then((res) => {
       const { code = 500 } = res
       if (code !== 200) {
         return
@@ -33,17 +37,21 @@ const User = () => {
 
   // 获取用户信息
   const getUserInfo = async () => {
-    const { data } = await get('/api/user/get_userinfo');
+    const { data } = await axios({ url: '/api/user/get_userinfo' });
     setUser(data);
-    setAvatar(imgUrlTrans(data.avatar))
+    setAvatar(data.avatar)
     setSignature(data.signature)
   };
 
   // 个性签名弹窗确认
   const confirmSig = async () => {
-    const { data } = await post('/api/user/edit_signature', {
-      signature: signature
-    });
+    const { data } = await axios({
+      url: '/api/user/edit_signature',
+      method: 'POST',
+      data: {
+        signature: signature
+      }
+    })
     setUser(data);
     setShow(false);
     Toast.show('修改成功');
@@ -59,8 +67,8 @@ const User = () => {
     <div className={s.head}>
       <div className={s.info}>
         <span>昵称：{ user.username }</span>
-        <span>
-          <img style={{ width: 30, height: 30, verticalAlign: '-10px' }} src="//s.yezgea02.com/1615973630132/geqian.png" alt="" />
+        <span onClick={() => setShow(true)}>
+          <CustomIcon type="icon-qianming" />
           <b>{ user.signature || '暂无内容' }</b>
         </span>
       </div>

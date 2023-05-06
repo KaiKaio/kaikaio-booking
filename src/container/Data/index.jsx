@@ -66,6 +66,7 @@ const Data = () => {
       .sort((a, b) => b.number - a.number); // 过滤出账单类型为收入的项
     setExpenseData(expense_data);
     setIncomeData(income_data);
+  
     setPieChart(pieType == "expense" ? expense_data : income_data);
   };
 
@@ -77,6 +78,7 @@ const Data = () => {
   // 切换饼图收支类型
   const changePieType = (type) => {
     setPieType(type);
+
     // 重绘饼图
     setPieChart(type == "expense" ? expenseData : incomeData);
   };
@@ -85,26 +87,38 @@ const Data = () => {
   const setPieChart = (data) => {
     if (window.echarts) {
       proportionChart = echarts.init(document.getElementById("proportion"));
+
+      console.log(data.map((item) => ({
+        value: item.number,
+        name: item.type_name,
+      })))
+
       proportionChart.setOption({
         tooltip: {
           trigger: "item",
-          formatter: "{a} <br/>{b} : {c} ({d}%)",
-        },
-        // 图例
-        legend: {
-          data: data.map((item) => item.type_name),
         },
         series: [
           {
-            name: "支出",
             type: "pie",
-            radius: "55%",
-            data: data.map((item) => {
-              return {
-                value: item.number,
-                name: item.type_name,
-              };
-            }),
+            silent: true,
+            radius: ['50%', '60%'],
+            startAngle: 90,
+            label: {
+              show: true
+            },
+            labelLine: {
+              length: 20,
+              length2: 20,
+            },
+            itemStyle: {
+              borderRadius: 6,
+              borderColor: '#fff',
+              borderWidth: 3
+            },
+            data: data.map((item) => ({
+              value: item.number,
+              name: item.type_name,
+            })),
             emphasis: {
               itemStyle: {
                 shadowBlur: 10,
