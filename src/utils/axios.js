@@ -1,5 +1,6 @@
 import axios from 'axios'
 import { Toast } from 'zarm'
+import { router } from '@/main'
 
 const MODE = import.meta.env.MODE // 环境变量
 
@@ -24,8 +25,8 @@ axios.interceptors.response.use(
       if (res.data.code === 401) {
         Toast.show('未登录，请登录后使用')
         setTimeout(() => {
-          window.location.href = '/login'
-        }, 2000)
+          router.navigate('/login', { replace:true })
+        }, 1000)
       }
 
       if (res.data.code === 413) {
