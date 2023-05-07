@@ -46,12 +46,13 @@ const Login = () => {
           }
         });
         localStorage.setItem('token', data.token);
-
-        axios({ url: '/api/type/list' }).then((res) => {
-          const { data: { list = [] } } = res
-          dispatch(setTypes(list))
-          navigateTo('/', { replace: true })
-        });
+        setTimeout(() => {
+          axios({ url: '/api/type/list' }).then((res) => {
+            const { data: { list = [] } } = res
+            dispatch(setTypes(list))
+            navigateTo('/', { replace: true })
+          });
+        }, 0)
       } else {
         if (!verify) {
           Toast.show('请输入验证码')
