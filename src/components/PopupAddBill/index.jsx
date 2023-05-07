@@ -228,7 +228,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
           <span className={cx(s.amount, s.animation)}>{amount}</span>
         </div>
         <div className={s.typeWarp}>
-          <Tabs value={value} onChange={setValue} swipeable>
+          <Tabs swipeable>
             {
               typeTabs.map((item) => (
                 <Panel title={`选项卡${item}`} key={item}>
