@@ -88,27 +88,25 @@ const Data = () => {
     if (window.echarts) {
       proportionChart = echarts.init(document.getElementById("proportion"));
 
-      console.log(data.map((item) => ({
-        value: item.number,
-        name: item.type_name,
-      })))
-
       proportionChart.setOption({
         tooltip: {
           trigger: "item",
         },
+        legend: {
+          left: "center",
+        },
         series: [
           {
             type: "pie",
-            silent: true,
-            radius: ['50%', '60%'],
-            startAngle: 90,
+            
+            radius: ['35%', '55%'],
+            minAngle: 10,
             label: {
               show: true
             },
             labelLine: {
-              length: 20,
-              length2: 20,
+              length: 15,
+              length2: 15,
             },
             itemStyle: {
               borderRadius: 6,
@@ -118,14 +116,7 @@ const Data = () => {
             data: data.map((item) => ({
               value: item.number,
               name: item.type_name,
-            })),
-            emphasis: {
-              itemStyle: {
-                shadowBlur: 10,
-                shadowOffsetX: 0,
-                shadowColor: "rgba(0, 0, 0, 0.5)",
-              },
-            },
+            }))
           },
         ],
       });

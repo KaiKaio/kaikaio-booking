@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import PopupDate from "@/components/PopupDate";
 import { Pull } from 'zarm';
 import Empty from '@/components/Empty'
 import qs from 'query-string';
@@ -13,15 +12,14 @@ import dayjs from 'dayjs';
 import Header from '@/components/Header';
 import CustomIcon from '@/components/CustomIcon';
 import PopupAddBill from '@/components/PopupAddBill'
+import ScrollDateSelect from '@/components/ScrollDateSelect/ScrollDateSelect'
 
 import s from './style.module.less'
 
 const Detail = () => {
   const types = useSelector((state) => state.types.types)
 
-  const monthRef = useRef();
   const pullRef = useRef();
-  const dateListRef = useRef();
   const addRef = useRef();
   const location = useLocation();
   const { type_id } = qs.parse(location.search); // TPYE_ID
@@ -31,7 +29,6 @@ const Detail = () => {
   const [totalExpense, setTotalExpense] = useState(0); // 总支出
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
   const [activeDate, setActiveDate] = useState(null);
-  const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
 
   const [icons, setIcons] = useState({});
   const [page, setPage] = useState(1); // 分页
@@ -39,10 +36,6 @@ const Detail = () => {
   const [totalPage, setTotalPage] = useState(0); // 分页总数
   const [refreshing, setRefreshing] = useState(REFRESH_STATE.normal); // 下拉刷新状态
   const [loading, setLoading] = useState(LOAD_STATE.normal); // 上拉加载状态
-
-  const monthShow = () => {
-    monthRef.current && monthRef.current.show();
-  };
 
   const localGenerateDates = (result) => {
     if (!result) {
@@ -160,21 +153,6 @@ const Detail = () => {
       return
     }
     setActiveDate(activeDate)
-
-    setTimeout(() => {
-      const contentWidth = dateListRef.current.offsetWidth; // 发生滑动元素的宽
-      const activeItem = document.querySelector(`.${s.active}`)
-      
-      const activeItemWidth = activeItem.offsetWidth; // 当前元素的宽
-      const activeItemLeft = activeItem.offsetLeft; // 当前元素的到他父盒子左侧的距离
-      const offset = activeItemLeft - (contentWidth - activeItemWidth) / 2; // 需要移动的位置
-      dateListRef.current.scrollTo({
-        top: 0,
-        left: offset,
-        behavior: "smooth"
-      });
-    }, 0)
-
     getBillList()
   }, [activeDate, page])
 
@@ -182,10 +160,6 @@ const Detail = () => {
     <Header title='账单详情' />
 
     <div className={s.card}>
-      <div className={s.time} onClick={monthShow}>
-        <span>{currentMonth}</span>
-        <CustomIcon className={s.date} type="icon-rili" />
-      </div>
       <div className={s.type}>
         <span className={cx({ [s.expense]: typeItem?.type == 1, [s.income]: typeItem?.type == 2 })}>
           <CustomIcon className={s.iconfont} type={typeItem?.icon} />
@@ -193,11 +167,11 @@ const Detail = () => {
         <span>{ typeItem?.name || '' }</span>
       </div>
 
-      <div className={s.dateList} ref={dateListRef}>
-        {
-          navDates.map((item, index) => <div className={cx({ [s.dateItem]: true, [s.active]: activeDate === item })} key={item + index} onClick={() => setActiveDate(item)}>{ item }</div>)
-        }
-      </div>
+      <ScrollDateSelect
+        dateList={navDates}
+        onSelect={(item) => setActiveDate(item)}
+        defaultSelectVal={activeDate}
+      />
 
       {
         typeItem?.type === '1'
@@ -239,7 +213,6 @@ const Detail = () => {
     </div>
 
     <PopupAddBill ref={addRef} detail={{}} onReload={() => {}} />
-    <PopupDate ref={monthRef} mode="month" onSelect={() => { setCurrentMonth(item) }} />
   </div>
 };
 
