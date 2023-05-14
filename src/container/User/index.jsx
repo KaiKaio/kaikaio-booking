@@ -97,6 +97,12 @@ const User = () => {
       </List.Item>
       <List.Item
         hasArrow
+        title="我的账本"
+        onClick={() => navigateTo('/books')}
+        prefix={ <CustomIcon type="icon-accountbook" /> }
+      />
+      <List.Item
+        hasArrow
         title="关于"
         onClick={() => navigateTo('/about')}
         prefix={ <CustomIcon type="icon-guanyu_o" /> }

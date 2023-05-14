@@ -6,6 +6,7 @@ import Login from '@/container/Login'
 import Detail from '@/container/Detail'
 import Account from '@/container/Account'
 import About from '@/container/About'
+import Books from '@/container/Books'
 import UserInfo from '@/container/UserInfo'
 
 const routes = [
@@ -36,6 +37,10 @@ const routes = [
   {
     path: "/about",
     component: About
+  },
+  {
+    path: "/books",
+    component: Books
   },
   {
     path: "/userinfo",
