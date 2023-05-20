@@ -1,13 +1,13 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Icon, Progress } from "zarm";
+import { Progress } from "zarm";
 import cx from "classnames";
 import dayjs from "dayjs";
-import { get } from "@/utils";
+import axios from '@/utils/axios'
 import { useSelector } from 'react-redux'
 import CustomIcon from "@/components/CustomIcon";
-import PopupDate from "@/components/PopupDate";
 import s from "./style.module.less";
 import { useNavigate } from "react-router-dom";
+import ScrollDateSelect from '@/components/ScrollDateSelect/ScrollDateSelect'
 
 let proportionChart = null;
 
@@ -15,15 +15,15 @@ const Data = () => {
   const navigateTo = useNavigate();
   const types = useSelector((state) => state.types.types)
 
-  const monthRef = useRef();
   const [totalType, setTotalType] = useState("expense");
-  const [currentMonth, setCurrentMonth] = useState(dayjs().format("YYYY-MM"));
   const [totalExpense, setTotalExpense] = useState(0);
   const [totalIncome, setTotalIncome] = useState(0);
   const [expenseData, setExpenseData] = useState([]);
   const [incomeData, setIncomeData] = useState([]);
   const [pieType, setPieType] = useState("expense");
   const [icons, setIcons] = useState({});
+  const [navDates, setNavDates] = useState([]);
+  const [activeDate, setActiveDate] = useState(null);
 
   useEffect(() => {
     const iconsMap = {};
@@ -37,21 +37,68 @@ const Data = () => {
   }, [types]);
 
   useEffect(() => {
+    if (!activeDate) {
+      return
+    }
     getData();
+  }, [activeDate])
+
+  useEffect(() => {
+    axios({
+      url: '/api/bill/getEarliestItemDate'
+    }).then((res) => {
+      const { data = '' } = res;
+      const dates = localGenerateDates(data)
+      setNavDates(dates)
+      
+      setActiveDate(dates[dates.length - 3])
+    });
+
     return () => {
       // 每次组件卸载的时候，需要释放图表实例。clear 只是将其清空不会释放。
       proportionChart?.dispose();
     };
-  }, [currentMonth]);
+  }, [])
+
+  const localGenerateDates = (result) => {
+    if (!result) {
+      return []
+    }
+
+    let dateList = ['', '']
+    let cur = dayjs(result).startOf('month')
+    while (cur <= dayjs().startOf('month')) {
+      dateList.push(cur.format('YYYY-MM'))
+
+      if (dayjs(cur).month() === 11) {
+        dateList.push(cur.add(1, 'month').format('YYYY'))
+      }
+      cur = cur.add(1, 'month')
+    }
+    dateList = [...dateList, '', '']
+    return dateList
+  }
 
   const getData = async () => {
-    const { data } = await get(
-      `/api/bill/data?start=${
-        dayjs(currentMonth).startOf("month").format("YYYY-MM-DD") + " 00:00:00"
-      }&end=${
-        dayjs(currentMonth).endOf("month").format("YYYY-MM-DD") + " 23:59:59"
-      }`
-    );
+    const isYearSearch = activeDate.length === 4
+    let params = {}
+
+    if (!isYearSearch) {
+      params = {
+        start: dayjs(activeDate).startOf("month").format("YYYY-MM-DD") + " 00:00:00",
+        end: dayjs(activeDate).endOf("month").format("YYYY-MM-DD") + " 23:59:59"
+      }
+    } else {
+      params = {
+        start: dayjs(activeDate).startOf("year").format("YYYY-MM-DD") + " 00:00:00",
+        end: dayjs(activeDate).endOf("year").format("YYYY-MM-DD") + " 23:59:59"
+      }
+    }
+
+    const { data } = await axios({
+      url: '/api/bill/data',
+      params
+    });
 
     // 总收支
     setTotalExpense(data.total_expense);
@@ -123,13 +170,8 @@ const Data = () => {
     }
   };
 
-  // 月份弹窗开关
-  const monthShow = () => {
-    monthRef.current && monthRef.current.show();
-  };
-
   const selectMonth = (item) => {
-    setCurrentMonth(item);
+    setActiveDate(item);
   };
 
   const handleToItemList = (item) => {
@@ -147,13 +189,15 @@ const Data = () => {
   return (
     <div className={s.data}>
       <div className={s.total}>
-        <div className={s.time} onClick={monthShow}>
-          <span>{currentMonth}</span>
-          <CustomIcon className={s.date} type="icon-rili" />
-        </div>
         <div className={s.title}>共支出</div>
         <div className={s.expense}>¥{totalExpense}</div>
         <div className={s.income}>共收入¥{totalIncome}</div>
+
+        <ScrollDateSelect
+          dateList={navDates}
+          onSelect={(item) => setActiveDate(item)}
+          defaultSelectVal={activeDate}
+        />
       </div>
       <div className={s.structure}>
         <div className={s.head}>
@@ -246,7 +290,6 @@ const Data = () => {
           <div id="proportion"></div>
         </div>
       </div>
-      <PopupDate ref={monthRef} mode="month" onSelect={selectMonth} />
     </div>
   );
 };

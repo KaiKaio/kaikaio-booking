@@ -45,10 +45,11 @@ const Detail = () => {
     let dateList = ['', '']
     let cur = dayjs(result).startOf('month')
     while (cur <= dayjs().startOf('month')) {
+      dateList.push(cur.format('YYYY-MM'))
+
       if (dayjs(cur).month() === 11) {
         dateList.push(cur.add(1, 'month').format('YYYY'))
       }
-      dateList.push(cur.format('YYYY-MM'))
       cur = cur.add(1, 'month')
     }
     dateList = [...dateList, '', '']
@@ -72,11 +73,25 @@ const Detail = () => {
   }
 
   const getBillList = async () => {
+    const isYearSearch = activeDate.length === 4
+    let params = {}
+
+    if (!isYearSearch) {
+      params = {
+        start: dayjs(activeDate).startOf("month").format("YYYY-MM-DD") + " 00:00:00",
+        end: dayjs(activeDate).endOf("month").format("YYYY-MM-DD") + " 23:59:59"
+      }
+    } else {
+      params = {
+        start: dayjs(activeDate).startOf("year").format("YYYY-MM-DD") + " 00:00:00",
+        end: dayjs(activeDate).endOf("year").format("YYYY-MM-DD") + " 23:59:59"
+      }
+    }
+
     const { data } = await axios({
       url: '/api/bill/list',
       params: {
-        start: dayjs(activeDate).startOf('month').format('YYYY-MM-DD') + ' 00:00:00',
-        end: dayjs(activeDate).endOf('month').format('YYYY-MM-DD') + ' 23:59:59',
+        ...params,
         type_id: typeItem.id,
         page: page,
         page_size: 20

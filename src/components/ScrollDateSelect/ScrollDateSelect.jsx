@@ -32,8 +32,8 @@ const ScrollDateSelect = (({
       const contentWidth = dateListRef.current.offsetWidth; // 发生滑动元素的宽
       const activeItem = document.querySelector(`.${s.active}`)
       
-      const activeItemWidth = activeItem.offsetWidth; // 当前元素的宽
-      const activeItemLeft = activeItem.offsetLeft; // 当前元素的到他父盒子左侧的距离
+      const activeItemWidth = activeItem?.offsetWidth || 0; // 当前元素的宽
+      const activeItemLeft = activeItem?.offsetLeft || 0; // 当前元素的到他父盒子左侧的距离
       const offset = activeItemLeft - (contentWidth - activeItemWidth) / 2; // 需要移动的位置
       dateListRef.current.scrollTo({
         top: 0,
