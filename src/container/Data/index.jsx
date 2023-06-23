@@ -8,6 +8,7 @@ import CustomIcon from "@/components/CustomIcon";
 import s from "./style.module.less";
 import { useNavigate } from "react-router-dom";
 import ScrollDateSelect from '@/components/ScrollDateSelect/ScrollDateSelect'
+import * as echarts from 'echarts';
 
 let proportionChart = null;
 
@@ -132,42 +133,40 @@ const Data = () => {
 
   // 绘制饼图方法
   const setPieChart = (data) => {
-    if (window.echarts) {
-      proportionChart = echarts.init(document.getElementById("proportion"));
+    proportionChart = echarts.init(document.getElementById("proportion"));
 
-      proportionChart.setOption({
-        tooltip: {
-          trigger: "item",
-        },
-        legend: {
-          left: "center",
-        },
-        series: [
-          {
-            type: "pie",
-            
-            radius: ['35%', '55%'],
-            minAngle: 10,
-            label: {
-              show: true
-            },
-            labelLine: {
-              length: 15,
-              length2: 15,
-            },
-            itemStyle: {
-              borderRadius: 6,
-              borderColor: '#fff',
-              borderWidth: 3
-            },
-            data: data.map((item) => ({
-              value: item.number,
-              name: item.type_name,
-            }))
+    proportionChart.setOption({
+      tooltip: {
+        trigger: "item",
+      },
+      legend: {
+        left: "center",
+      },
+      series: [
+        {
+          type: "pie",
+          
+          radius: ['35%', '55%'],
+          minAngle: 10,
+          label: {
+            show: true
           },
-        ],
-      });
-    }
+          labelLine: {
+            length: 15,
+            length2: 15,
+          },
+          itemStyle: {
+            borderRadius: 6,
+            borderColor: '#fff',
+            borderWidth: 3
+          },
+          data: data.map((item) => ({
+            value: item.number,
+            name: item.type_name,
+          }))
+        },
+      ],
+    });
   };
 
   const selectMonth = (item) => {

@@ -31,8 +31,6 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   const [remark, setRemark] = useState(''); // 备注
   const [showRemark, setShowRemark] = useState(false); // 备注输入框
   const [date, setDate] = useState(new Date()); // 日期
-
-  const [value, setValue] = useState(0);
  
 
   useEffect(() => {
