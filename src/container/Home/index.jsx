@@ -22,6 +22,7 @@ const Home = () => {
   const addRef = useRef(); // 添加账单 ref
   const [totalExpense, setTotalExpense] = useState(0); // 总支出
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
+  const [orderBy, setOrderBy] = useState('DESC'); // 列表排序方式
   const [currentSelect, setCurrentSelect] = useState({}); // 当前筛选类型
   const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM-DD')); // 当前筛选时间
   const [page, setPage] = useState(1); // 分页
@@ -34,7 +35,7 @@ const Home = () => {
 
   useEffect(() => {
     getBillList() // 初始化
-  }, [page, currentSelect, currentTime])
+  }, [page, currentSelect, currentTime, orderBy])
 
   useEffect(() => {
     const iconsMap = {};
@@ -55,6 +56,7 @@ const Home = () => {
         end: dayjs(currentTime).endOf('month').format('YYYY-MM-DD') + ' 23:59:59',
         type_id: currentSelect.id,
         page: page,
+        orderBy,
         page_size: 20
       }
     })
@@ -112,6 +114,12 @@ const Home = () => {
   }
 
   // 添加账单弹窗
+  const handleChangeOrderBy = () => {
+    setOrderBy(orderBy === 'DESC' ? 'ASC' : 'DESC')
+    setPage(1);
+  };
+
+  // 添加账单弹窗
   const toggle = () => {
     typeRef.current && typeRef.current.show()
   };
@@ -144,6 +152,9 @@ const Home = () => {
         <span className={s.income}>总收入：<b>¥ { totalIncome }</b></span>
       </div>
       <div className={s.typeWrap}>
+        <div className={s.left} onClick={handleChangeOrderBy}>
+          <span className={s.title}>{ orderBy === 'DESC' ? '倒序' : '正序' }</span>
+        </div>
         <div className={s.left} onClick={toggle}>
           <span className={s.title}>{ currentSelect.name || '全部类型' } <Icon className={s.arrow} type="arrow-bottom" /></span>
         </div>
