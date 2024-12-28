@@ -57,7 +57,7 @@ const Home = () => {
         type_id: currentSelect.id,
         page: page,
         orderBy,
-        page_size: 20
+        page_size: 999
       }
     })
 

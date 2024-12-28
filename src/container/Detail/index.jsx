@@ -94,7 +94,7 @@ const Detail = () => {
         ...params,
         type_id: typeItem.id,
         page: page,
-        page_size: 20
+        page_size: 999
       }
     })
 
