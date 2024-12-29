@@ -189,7 +189,7 @@ const Detail = () => {
       />
 
       {
-        typeItem?.type === '1'
+        typeItem?.type === 1
           ? <div className={cx(s.amount, s.expense)}>￥{ totalExpense }</div>
           : <div className={cx(s.amount, s.incom)}>￥{ totalIncome }</div>
       }
