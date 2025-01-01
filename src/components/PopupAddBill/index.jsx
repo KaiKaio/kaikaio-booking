@@ -3,7 +3,7 @@
  */
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Popup, Icon, Toast, Input, Tabs, Keyboard } from 'zarm';
+import { Popup, Icon, Toast, Input, Tabs, Keyboard  } from 'zarm';
 import cx from 'classnames'
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux'
@@ -12,6 +12,8 @@ import PopupDate from '../PopupDate'
 import { post } from '@/utils'
 
 import s from './style.module.less';
+
+const { Panel } = Tabs;
 
 const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   const types = useSelector((state) => state.types.types)
@@ -27,6 +29,7 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   const [currentType, setCurrentType] = useState({});
   const [amount, setAmount] = useState(''); // 账单价格
   const [remark, setRemark] = useState(''); // 备注
+  const [tabsVal, setTabsVal] = useState(0);
   const [showRemark, setShowRemark] = useState(false); // 备注输入框
   const [date, setDate] = useState(new Date()); // 日期
  
@@ -131,7 +134,8 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   }
 
   // 选择账单类型
-  const choseType = (item) => {
+  const choseType = (item, tIndex) => {
+    setTabsVal(tIndex)
     setCurrentType(item)
   }
 
@@ -224,32 +228,38 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
           <span className={cx(s.amount, s.animation)}>{amount}</span>
         </div>
         <div className={s.typeWarp}>
-          {
-            <div className={s.typePanel}>
-              {
-                typeList.map(titem => (
-                  <div 
-                    onClick={() => choseType(titem)}
-                    key={titem.id}
-                    className={s.typeItem}
-                  >
-                    <span
-                      className={
-                      cx({
-                        [s.iconfontWrap]: true,
-                        [s.expense]: payType == 'expense',
-                        [s.income]: payType == 'income',
-                        [s.active]: currentType.id == titem.id}
-                      )}
-                    >
-                      <CustomIcon className={s.iconfont} type={titem.icon} />
-                    </span>
-                    <span>{titem.name}</span>
+          <Tabs swipeable value={tabsVal}>
+            {
+              typeTabs.map((item) => (
+                <Panel title={`选项卡${item}`} key={item}>
+                  <div className={s.typePanel}>
+                    {
+                      typeList.slice(item * 15, (item + 1) * 15).map(titem => (
+                        <div 
+                          onClick={() => choseType(titem, item)}
+                          key={titem.id}
+                          className={s.typeItem}
+                        >
+                          <span
+                            className={
+                            cx({
+                              [s.iconfontWrap]: true,
+                              [s.expense]: payType == 'expense',
+                              [s.income]: payType == 'income',
+                              [s.active]: currentType.id == titem.id}
+                            )}
+                          >
+                            <CustomIcon className={s.iconfont} type={titem.icon} />
+                          </span>
+                          <span>{titem.name}</span>
+                        </div>
+                      ))
+                    }
                   </div>
-                ))
-              }
-            </div>
-          }
+                </Panel>
+              ))
+            }
+          </Tabs>
         </div>
         <div className={s.remark}>
           <span onClick={() => handleEnterRemark()}>

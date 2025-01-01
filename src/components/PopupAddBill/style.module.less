@@ -76,8 +76,9 @@
   .type-warp {
     padding: 0 16px;
     margin: 12px 0px;
-    max-height: 140px;
-    overflow-y: auto;
+    * {
+      touch-action: pan-x;
+    }
     :global {
       .za-tabs__tablist {
         display: none;

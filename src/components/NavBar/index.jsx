@@ -21,7 +21,7 @@ const NavBar = (props) => {
 
   return (
     <TabBar
-      safeArea
+      safearea={"true"}
       style={{display: props.showNav ? 'block' : 'none' }}
       className={cx({ [s.tab]: true })}
       activeKey={activeKey}
