@@ -24,7 +24,7 @@ const Home = () => {
   const [totalIncome, setTotalIncome] = useState(0); // 总收入
   const [orderBy, setOrderBy] = useState('DESC'); // 列表排序方式
   const [currentSelect, setCurrentSelect] = useState({}); // 当前筛选类型
-  const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM-DD')); // 当前筛选时间
+  const [currentTime, setCurrentTime] = useState(dayjs().format('YYYY-MM')); // 当前筛选时间
   const [page, setPage] = useState(1); // 分页
   const [list, setList] = useState([]); // 账单列表
   const [totalPage, setTotalPage] = useState(0); // 分页总数
@@ -57,7 +57,7 @@ const Home = () => {
         type_id: currentSelect.id,
         page: page,
         orderBy,
-        page_size: 20
+        page_size: 999
       }
     })
 
