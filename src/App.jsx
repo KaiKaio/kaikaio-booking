@@ -20,21 +20,67 @@ const App = () => {
   const needNav = ['/', '/data', '/user'] // 需要底部导航栏的路径
   const [showNav, setShowNav] = useState(false) // 是否展示 Nav
 
+
+  const listenSetToken = ({ data: { method, token } }) => {
+    if (method === 'setToken') {
+      localStorage.setItem('token', token);
+      window.parent.postMessage(
+        {
+          msg: 'token received',
+        },
+        // 'https://sso.kaikaio.com/',
+        'http://localhost:3000/',
+      );
+    }
+  };
+
+  useEffect(() => {
+    window.addEventListener('message', listenSetToken, false);
+
+    axios.defaults.headers.common.Authorization = `Bearer ${
+      localStorage.token || ''
+    }`;
+
+    return () => {
+      window.removeEventListener('message', listenSetToken);
+    };
+  }, [])
+
   useEffect(() => {
     setShowNav(needNav.includes(pathname))
   }, [pathname]) // [] 内的参数若是变化，便会执行上述回调函数=
 
   useEffect(() => {
-    axios({  url: '/api/type/list' }).then((res) => {
+    axios({ method: 'post', url: '/api/user/verify' }).then((res) => {
+      const { code = 401 } = res
+      if (code !== 200) {
+        throw new Error('NOT 200 Verify Auth')
+      }
+
+      return axios({  url: '/api/type/list' })
+    }).then((res) => {
       const { data: { list = [] } } = res
       dispatch(setTypes(list))
+    }).catch((err) => {
+      console.error(err, 'Error App useEffect')
     });
   }, [])
 
   return <ConfigProvider primaryColor={'#007fff'}>
     <>
       <Routes>
-        {routes.map(route => <Route exact key={route.path} path={route.path} element={<route.component />} />)}
+        {
+          routes.map(route => {
+            return (
+              <Route
+                exact
+                key={route.path}
+                path={route.path}
+                element={<route.component />}
+              />
+            )
+          })
+        }
       </Routes>
       <NavBar showNav={showNav} path={pathname} />
     </>

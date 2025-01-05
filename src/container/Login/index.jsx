@@ -84,52 +84,15 @@ const Login = () => {
   }, [type])
   return <div className={s.auth}>
     <img className={s.loginTitleIcon} src={LoginTitleIcon} alt="LoginTitleIcon" />
-    <div className={s.tab}>
-      <span className={cx({ [s.avtive]: type == 'login' })} onClick={() => setType('login')}>登录</span>
-      <span className={cx({ [s.avtive]: type == 'register' })} onClick={() => setType('register')}>注册</span>
-    </div>
-    <div className={s.form}>
-      <List>
-        <List.Item className={s.inputWrap} prefix={ <CustomIcon type="icon-wode" /> }>
-          <Input
-            clearable
-            type="text"
-            placeholder="请输入账号"
-            onChange={(event) => setUsername(event.target.value)}
-          />
-        </List.Item>
-      
-        <List.Item className={s.inputWrap} prefix={<CustomIcon type="icon-password" />}>
-          <Input
-            clearable
-            type="password"
-            placeholder="请输入密码"
-            onChange={(event) => setPassword(event.target.value)}
-          />
-        </List.Item>
-        {
-          type == 'register' ? (
-            <List.Item className={s.inputWrap} prefix={<CustomIcon type="icon-password" />}>
-              <Input
-                clearable
-                type="text"
-                placeholder="请输入验证码"
-                onChange={(event) => setVerify(event.target.value)}
-              />
-              <Captcha ref={captchaRef} charNum={4} onChange={handleChange} />
-            </List.Item>
-          ) : null
-        }
-      </List>
-    </div>
     <div className={s.operation}>
-      <Button
-        onClick={onSubmit}
-        size={'sm'}
-        block
-        ghost
-        shadow
-      >{type == 'login' ? '登 录' : '注 册'}</Button>
+      <a href="http://localhost:3000/">
+        <Button
+          size={'sm'}
+          block
+          ghost
+          shadow
+        >{type == 'login' ? '登 录' : '注 册'}</Button>
+      </a>
     </div>
   </div>
 };

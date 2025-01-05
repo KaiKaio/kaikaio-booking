@@ -24,9 +24,7 @@ axios.interceptors.response.use(
 
       if (res.data.code === 401) {
         Toast.show('未登录，请登录后使用')
-        setTimeout(() => {
-          router.navigate('/login', { replace:true })
-        }, 1000)
+        router.navigate('/login', { replace:true })
       }
 
       if (res.data.code === 413) {
@@ -39,6 +37,10 @@ axios.interceptors.response.use(
     return res.data
   },
   (err) => {
+    if (err?.response?.status === 401) {
+      Toast.show('未登录，请登录后使用')
+      router.navigate('/login', { replace:true })
+    }
     if (err?.code === 'ECONNABORTED') {
       Toast.show('请求超时，请刷新重试')
     }

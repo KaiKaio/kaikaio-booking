@@ -11,6 +11,11 @@ import UserInfo from '@/container/UserInfo'
 
 const routes = [
   {
+    path: "/login",
+    notAuth: true,
+    component: Login
+  },
+  {
     path: "/",
     component: Home
   },
@@ -21,10 +26,6 @@ const routes = [
   {
     path: "/user",
     component: User
-  },
-  {
-    path: "/login",
-    component: Login
   },
   {
     path: "/detail",
