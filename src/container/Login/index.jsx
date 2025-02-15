@@ -87,6 +87,7 @@ const Login = () => {
     <div className={s.operation}>
       <a href="http://localhost:3000/">
         <Button
+          className={s.loginBtn}
           size={'sm'}
           block
           ghost
