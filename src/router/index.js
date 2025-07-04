@@ -1,13 +1,16 @@
 // router/index.js
-import Home from '@/container/Home'
-import Data from '@/container/Data'
-import User from '@/container/User'
-import Login from '@/container/Login'
-import Detail from '@/container/Detail'
-import Account from '@/container/Account'
-import About from '@/container/About'
-import Books from '@/container/Books'
-import UserInfo from '@/container/UserInfo'
+import { lazy } from 'react'
+
+// 使用懒加载导入组件
+const Home = lazy(() => import('@/container/Home'))
+const Data = lazy(() => import('@/container/Data'))
+const User = lazy(() => import('@/container/User'))
+const Login = lazy(() => import('@/container/Login'))
+const Detail = lazy(() => import('@/container/Detail'))
+const Account = lazy(() => import('@/container/Account'))
+const About = lazy(() => import('@/container/About'))
+const Books = lazy(() => import('@/container/Books'))
+const UserInfo = lazy(() => import('@/container/UserInfo'))
 
 const routes = [
   {

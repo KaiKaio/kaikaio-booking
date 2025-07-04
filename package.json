@@ -5,6 +5,7 @@
     "dev": "vite --mode development",
     "build:beta": "vite build --mode beta",
     "build:release": "vite build --mode release",
+    "build:analyze": "vite build --mode release && npx vite-bundle-analyzer dist",
     "serve": "vite preview"
   },
   "dependencies": {

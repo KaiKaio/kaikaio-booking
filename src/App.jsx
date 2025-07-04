@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import {
   BrowserRouter as Router,
   Routes,
@@ -68,20 +68,22 @@ const App = () => {
 
   return <ConfigProvider primaryColor={'#007fff'}>
     <>
-      <Routes>
-        {
-          routes.map(route => {
-            return (
-              <Route
-                exact
-                key={route.path}
-                path={route.path}
-                element={<route.component />}
-              />
-            )
-          })
-        }
-      </Routes>
+      <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>加载中...</div>}>
+        <Routes>
+          {
+            routes.map(route => {
+              return (
+                <Route
+                  exact
+                  key={route.path}
+                  path={route.path}
+                  element={<route.component />}
+                />
+              )
+            })
+          }
+        </Routes>
+      </Suspense>
       <NavBar showNav={showNav} path={pathname} />
     </>
   </ConfigProvider>;
