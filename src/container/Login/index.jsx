@@ -3,7 +3,7 @@ import { List, Input, Button, Checkbox, Toast, Keyboard } from 'zarm';
 import cx from 'classnames';
 import Captcha from "react-captcha-code";
 import CustomIcon from '@/components/CustomIcon';
-import LoginTitleIcon from '@/assets/login-title-icon.png';
+import LoginTitleIcon from '@/assets/login-title-icon.webp';
 import axios from '@/utils/axios'
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
