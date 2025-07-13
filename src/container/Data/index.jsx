@@ -8,7 +8,7 @@ import CustomIcon from "@/components/CustomIcon";
 import s from "./style.module.less";
 import { useNavigate } from "react-router-dom";
 import ScrollDateSelect from '@/components/ScrollDateSelect/ScrollDateSelect'
-import * as echarts from 'echarts';
+import echarts from '@/utils/echarts';
 
 let proportionChart = null;
 

@@ -38,7 +38,7 @@ export default defineConfig({
           // 将 UI 库分离
           'ui-vendor': ['zarm'],
           // 将工具库分离
-          'utils-vendor': ['axios', 'dayjs', 'echarts', 'classnames']
+          'utils-vendor': ['axios', 'dayjs', 'classnames']
         }
       }
     },
