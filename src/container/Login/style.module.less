@@ -2,12 +2,50 @@
   min-height: 100vh;
   // background: url('@/assets/login-background.jpg') center center/cover no-repeat;
   background: #a4dbde;
+  
+  .imagePlaceholder {
+    width: 75%;
+    height: 200px;
+    margin: 0px auto 0px;
+    padding: 60px 0px 0px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  
+  .loadingSpinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top: 3px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
   .login-title-icon {
     width: 75%;
     display: block;
     object-fit: contain;
     margin: 0px auto 0px;
     padding: 60px 0px 0px;
+    // 添加图片优化属性
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
+    will-change: transform;
+    // 确保图片不被压缩
+    max-width: none;
+    height: auto;
+    
+    &.hidden {
+      display: none;
+    }
   }
   .head {
     width: 100%;

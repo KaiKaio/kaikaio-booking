@@ -83,3 +83,26 @@ export const imgUrlTrans = (url) => {
     return url
   }
 }
+
+/**
+ * 预加载图片
+ * @param {string} src - 图片路径
+ * @returns {Promise} - 返回加载完成的 Promise
+ */
+export const preloadImage = (src) => {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.onload = () => resolve(img);
+    img.onerror = reject;
+    img.src = src;
+  });
+};
+
+/**
+ * 批量预加载图片
+ * @param {string[]} imageUrls - 图片路径数组
+ * @returns {Promise} - 返回所有图片加载完成的 Promise
+ */
+export const preloadImages = (imageUrls) => {
+  return Promise.all(imageUrls.map(preloadImage));
+};

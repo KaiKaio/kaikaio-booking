@@ -8,6 +8,7 @@ import axios from '@/utils/axios'
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from 'react-redux'
 import { setTypes } from '@/store/typesSlice'
+import { preloadImage } from '@/utils/index';
 
 import s from './style.module.less';
 
@@ -20,10 +21,24 @@ const Login = () => {
   const [username, setUsername] = useState(''); // 账号
   const [password, setPassword] = useState(''); // 密码
   const [verify, setVerify] = useState(''); // 验证码
+  const [imageLoaded, setImageLoaded] = useState(false);
 
   //  验证码变化，回调方法
   const handleChange = useCallback((captcha) => {
     setCaptcha(captcha)
+  }, []);
+
+  // 预加载登录图标
+  useEffect(() => {
+    preloadImage(LoginTitleIcon)
+      .then(() => {
+        setImageLoaded(true);
+        console.log('登录图标预加载完成');
+      })
+      .catch((error) => {
+        console.error('登录图标预加载失败:', error);
+        setImageLoaded(true); // 即使失败也设置为已加载，避免阻塞
+      });
   }, []);
   
   const onSubmit = async () => {
@@ -83,7 +98,25 @@ const Login = () => {
     document.title = type == 'login' ? '登录' : '注册';
   }, [type])
   return <div className={s.auth}>
-    <img className={s.loginTitleIcon} src={LoginTitleIcon} alt="LoginTitleIcon" />
+    {!imageLoaded && (
+      <div className={s.imagePlaceholder}>
+        <div className={s.loadingSpinner}></div>
+      </div>
+    )}
+    <img 
+      className={cx(s.loginTitleIcon, { [s.hidden]: !imageLoaded })} 
+      src={LoginTitleIcon} 
+      alt="LoginTitleIcon" 
+      loading="eager"
+      fetchPriority="high"
+      onLoad={() => setImageLoaded(true)}
+      onError={(e) => {
+        console.error('登录图标加载失败:', e);
+        setImageLoaded(true); // 即使失败也设置为已加载
+        // 可以设置一个备用图片
+        // e.target.src = '/fallback-icon.png';
+      }}
+    />
     <div className={s.operation}>
       <a href="http://localhost:3000/">
         <Button
