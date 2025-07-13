@@ -62,7 +62,9 @@ export default defineConfig({
     // 启用 source map
     sourcemap: false,
     // 设置块大小警告限制
-    chunkSizeWarningLimit: 1000
+    chunkSizeWarningLimit: 1000, // 降低警告阈值
+    // 启用CSS代码分割
+    cssCodeSplit: true,
   },
   server: {
     host: '0.0.0.0',
