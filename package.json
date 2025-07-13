@@ -24,6 +24,7 @@
     "react-dom": "18.2.0",
     "react-redux": "^8.0.5",
     "react-router-dom": "^6.10.0",
+    "vite-plugin-compression": "^0.5.1",
     "zarm": "^3.1.5"
   },
   "devDependencies": {

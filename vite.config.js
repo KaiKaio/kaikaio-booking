@@ -1,11 +1,20 @@
 import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import path from 'path'
+import viteCompression from 'vite-plugin-compression'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
-    reactRefresh()
+    reactRefresh(),
+    // 启用 gzip 压缩
+    viteCompression({
+      verbose: true,
+      disable: false,
+      threshold: 10240, // 10KB 以上才压缩
+      algorithm: 'gzip',
+      ext: '.gz',
+    }),
   ],
   css: {
     modules: {
