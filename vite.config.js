@@ -2,11 +2,16 @@ import { defineConfig } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import path from 'path'
 import viteCompression from 'vite-plugin-compression'
+import { viteExternalsPlugin } from 'vite-plugin-externals'
 
 // https://vitejs.dev/config/
 export default defineConfig({
   plugins: [
     reactRefresh(),
+    viteExternalsPlugin({
+      react: 'React',
+      'react-dom': 'ReactDOM'
+    }),
     // 启用 gzip 压缩
     viteCompression({
       verbose: true,
@@ -38,8 +43,8 @@ export default defineConfig({
     rollupOptions: {
       output: {
         manualChunks: {
-          // 将 React 相关库分离
-          'react-vendor': ['react', 'react-dom'],
+          // // 将 React 相关库分离
+          // 'react-vendor': ['react', 'react-dom'],
           // 将路由相关库分离
           'router-vendor': ['react-router-dom'],
           // 将状态管理相关库分离
