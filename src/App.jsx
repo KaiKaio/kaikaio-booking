@@ -3,7 +3,8 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
-  useLocation
+  useLocation,
+  useNavigate
 } from "react-router-dom";
 import axios from '@/utils/axios'
 import { ConfigProvider } from 'zarm';
@@ -14,6 +15,7 @@ import { setTypes } from '@/store/typesSlice'
 
 const App = () => {
   const dispatch = useDispatch();
+  const navigateTo = useNavigate();
 
   const location = useLocation()
   const { pathname } = location // 获取当前路径
@@ -51,9 +53,10 @@ const App = () => {
   }, [pathname]) // [] 内的参数若是变化，便会执行上述回调函数=
 
   useEffect(() => {
-    axios({ method: 'post', url: '/api/user/verify' }).then((res) => {
+    axios({ method: 'post', url: '/api/user/verify' }).then((res = {}) => {
       const { code = 401 } = res
       if (code !== 200) {
+        navigateTo('/login', { replace:true })
         throw new Error('NOT 200 Verify Auth')
       }
 

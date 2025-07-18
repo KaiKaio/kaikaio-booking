@@ -1,6 +1,17 @@
+@font-face {
+  font-family: 'FirstScreen';
+  src: url('//at.alicdn.com/wf/webfont/uH2ki9PFxrMP/oaEYC81zPb8H.woff2') format('woff2');
+}
+
+@font-face {
+  font-family: 'AlimamaDaoLiTi';
+  src: url('./assets/fonts/AlimamaDaoLiTi.woff2') format('woff2');
+  font-display: swap;
+}
+
 body {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+  font-family: 'FirstScreen', 'AlimamaDaoLiTi', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
   -webkit-font-smoothing: antialiased;

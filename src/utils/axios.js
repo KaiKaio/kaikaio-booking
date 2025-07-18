@@ -4,9 +4,10 @@ import { router } from '@/main'
 
 const MODE = import.meta.env.MODE // 环境变量
 
-axios.defaults.baseURL = MODE == 'development' ? '' : 'http://47.99.134.126:7009'
+// axios.defaults.baseURL = MODE == 'development' ? '' : 'http://47.99.134.126:7009'
+axios.defaults.baseURL = MODE == ''
 axios.defaults.withCredentials = true
-axios.defaults.timeout = 5000
+axios.defaults.timeout = 3000
 axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
 axios.defaults.headers['Authorization'] = `${localStorage.getItem('token') || null}`
 axios.defaults.headers.post['Content-Type'] = 'application/json'
