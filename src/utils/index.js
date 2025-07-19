@@ -1,108 +1,66 @@
-import axios from './axios'
-import { baseUrl } from 'config'
-const MODE = import.meta.env.MODE // 环境变量
+import axios from './axios';
 
-export const get = axios.get
-
-export const post = axios.post
-
-export const typeMap = {
-  1: {
-    icon: 'icon-canyin'
-  },
-  2: {
-    icon: 'icon-jiaotongxinxi'
-  },
-  3: {
-    icon: 'icon-kouhong'
-  },
-  4: {
-    icon: 'icon-fushi'
-  },
-  5: {
-    icon: 'gouwu'
-  },
-  6: {
-    icon: 'icon-yule'
-  },
-  7: {
-    icon: 'icon-xiyanqu'
-  },
-  8: {
-    icon: 'lvxing'
-  },
-  9: {
-    icon: 'renqing'
-  },
-  10: {
-    icon: 'qita'
-  },
-  11: {
-    icon: 'gongzi'
-  },
-  12: {
-    icon: 'jiangjin'
-  },
-  13: {
-    icon: 'zhuanzhang'
-  },
-  14: {
-    icon: 'licai'
-  },
-  15: {
-    icon: 'tuikuang'
-  },
-  16: {
-    icon: 'qita'
-  }
-}
-
-export const REFRESH_STATE = {
-  normal: 0, // 普通
-  pull: 1, // 下拉刷新（未满足刷新条件）
-  drop: 2, // 释放立即刷新（满足刷新条件）
-  loading: 3, // 加载中
-  success: 4, // 加载成功
-  failure: 5, // 加载失败
+// GET 请求
+export const get = (url, params = {}) => {
+  return axios.get(url, { params });
 };
 
-export const LOAD_STATE = {
-  normal: 0, // 普通
-  abort: 1, // 中止
-  loading: 2, // 加载中
-  success: 3, // 加载成功
-  failure: 4, // 加载失败
-  complete: 5, // 加载完成（无新数据）
+// POST 请求
+export const post = (url, data = {}) => {
+  return axios.post(url, data);
 };
 
-export const imgUrlTrans = (url) => {
-  if (url && url.startsWith('http')) {
-    return url
-  } else {
-    url = `${MODE == 'development' ? 'http://localhost:7002' : baseUrl}${url}`
-    return url
-  }
-}
-
-/**
- * 预加载图片
- * @param {string} src - 图片路径
- * @returns {Promise} - 返回加载完成的 Promise
- */
-export const preloadImage = (src) => {
-  return new Promise((resolve, reject) => {
-    const img = new Image();
-    img.onload = () => resolve(img);
-    img.onerror = reject;
-    img.src = src;
-  });
+// PUT 请求
+export const put = (url, data = {}) => {
+  return axios.put(url, data);
 };
 
-/**
- * 批量预加载图片
- * @param {string[]} imageUrls - 图片路径数组
- * @returns {Promise} - 返回所有图片加载完成的 Promise
- */
-export const preloadImages = (imageUrls) => {
-  return Promise.all(imageUrls.map(preloadImage));
+// DELETE 请求
+export const del = (url, params = {}) => {
+  return axios.delete(url, { params });
+};
+
+// 格式化金额
+export const formatMoney = (amount) => {
+  return Number(amount).toFixed(2);
+};
+
+// 格式化日期
+export const formatDate = (date, format = 'YYYY-MM-DD') => {
+  const d = new Date(date);
+  const year = d.getFullYear();
+  const month = String(d.getMonth() + 1).padStart(2, '0');
+  const day = String(d.getDate()).padStart(2, '0');
+  
+  return format
+    .replace('YYYY', year)
+    .replace('MM', month)
+    .replace('DD', day);
+};
+
+// 防抖函数
+export const debounce = (func, wait) => {
+  let timeout;
+  return function executedFunction(...args) {
+    const later = () => {
+      clearTimeout(timeout);
+      func(...args);
+    };
+    clearTimeout(timeout);
+    timeout = setTimeout(later, wait);
+  };
+};
+
+// 节流函数
+export const throttle = (func, limit) => {
+  let inThrottle;
+  return function() {
+    const args = arguments;
+    const context = this;
+    if (!inThrottle) {
+      func.apply(context, args);
+      inThrottle = true;
+      setTimeout(() => inThrottle = false, limit);
+    }
+  };
 };

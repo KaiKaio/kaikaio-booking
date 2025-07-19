@@ -1,8 +1,8 @@
-import { configureStore } from '@reduxjs/toolkit'
-import typesReducer from '@/store/typesSlice'
+import { configureStore } from '@reduxjs/toolkit';
+import typesReducer from './typesSlice';
 
 export const store = configureStore({
   reducer: {
-    types: typesReducer
+    types: typesReducer,
   },
-})
+});

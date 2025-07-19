@@ -1,51 +1,51 @@
-import axios from 'axios'
-import { Toast } from 'zarm'
-import { router } from '@/main'
+import axios from 'axios';
+import { Alert } from 'react-native';
 
-const MODE = import.meta.env.MODE // 环境变量
+// 环境变量配置
+const MODE = __DEV__ ? 'development' : 'production';
 
-// axios.defaults.baseURL = MODE == 'development' ? '' : 'http://47.99.134.126:7009'
-axios.defaults.baseURL = MODE == ''
-axios.defaults.withCredentials = true
-axios.defaults.timeout = 3000
-axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest'
-axios.defaults.headers['Authorization'] = `${localStorage.getItem('token') || null}`
-axios.defaults.headers.post['Content-Type'] = 'application/json'
+// axios 默认配置
+axios.defaults.baseURL = MODE === 'development' ? 'http://localhost:3000' : 'http://47.99.134.126:7009';
+axios.defaults.timeout = 10000;
+axios.defaults.headers['X-Requested-With'] = 'XMLHttpRequest';
+axios.defaults.headers.post['Content-Type'] = 'application/json';
 
+// 响应拦截器
 axios.interceptors.response.use(
   (res) => {
     if (typeof res.data !== 'object') {
-      Toast.show('服务端异常！')
-      return Promise.reject(res)
+      Alert.alert('错误', '服务端异常！');
+      return Promise.reject(res);
     }
+    
     if (res.data.code !== 200) {
       if (res.data.msg) {
-        Toast.show(res.data.msg)
+        Alert.alert('提示', res.data.msg);
       }
 
       if (res.data.code === 401) {
-        Toast.show('未登录，请登录后使用')
-        router.navigate('/login', { replace:true })
+        Alert.alert('提示', '未登录，请登录后使用');
+        // 在 React Native 中，导航跳转需要通过 navigation prop 处理
       }
 
       if (res.data.code === 413) {
-        Toast.show('图片不得超过 50kb')
+        Alert.alert('提示', '图片不得超过 50kb');
       }
 
-      return Promise.reject(res.data)
+      return Promise.reject(res.data);
     }
 
-    return res.data
+    return res.data;
   },
   (err) => {
     if (err?.response?.status === 401) {
-      Toast.show('未登录，请登录后使用')
-      router.navigate('/login', { replace:true })
+      Alert.alert('提示', '未登录，请登录后使用');
     }
     if (err?.code === 'ECONNABORTED') {
-      Toast.show('请求超时，请刷新重试')
+      Alert.alert('提示', '请求超时，请刷新重试');
     }
+    return Promise.reject(err);
   }
-)
+);
 
-export default axios
+export default axios;

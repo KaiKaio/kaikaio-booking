@@ -1,138 +1,177 @@
-import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { List, Modal, Input, Button, Toast } from 'zarm';
-import axios from '@/utils/axios'
-import CustomIcon from '@/components/CustomIcon';
+import React from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  TouchableOpacity,
+  ScrollView,
+  Alert,
+} from 'react-native';
+import CustomIcon from '../components/CustomIcon';
 
-import s from './style.module.less';
-
-const User = () => {
-  const navigateTo = useNavigate();
-  const [user, setUser] = useState({});
-  const [signature, setSignature] = useState('');
-  const [show, setShow] = useState(false);
-  const [avatar, setAvatar] = useState('');
-
-  useEffect(() => {
-    getUserInfo();
-  }, []);
-
-  const handleChangeFile = (event) => {
-    const file = event.target.files[0];
-    const formData = new FormData();
-    formData.append("file", file)
-
-    axios({
-      url: '/api/bill/import',
-      method: 'POST',
-      data: formData
-    }).then((res) => {
-      const { code = 500 } = res
-      if (code !== 200) {
-        return
-      }
-      Toast.show('导入账本成功');
-    })
-  }
-
-  // 获取用户信息
-  const getUserInfo = async () => {
-    const { data } = await axios({ url: '/api/user/get_userinfo' });
-    setUser(data);
-    setAvatar(data.avatar)
-    setSignature(data.signature)
+const User = ({ navigation }) => {
+  const handleLogout = () => {
+    Alert.alert(
+      '提示',
+      '确定要退出登录吗？',
+      [
+        { text: '取消', style: 'cancel' },
+        {
+          text: '确定',
+          onPress: () => {
+            global.token = null;
+            navigation.replace('Login');
+          },
+        },
+      ]
+    );
   };
 
-  // 个性签名弹窗确认
-  const confirmSig = async () => {
-    const { data } = await axios({
-      url: '/api/user/edit_signature',
-      method: 'POST',
-      data: {
-        signature: signature
-      }
-    })
-    setUser(data);
-    setShow(false);
-    Toast.show('修改成功');
-  } ;
+  const menuItems = [
+    {
+      title: '账单详情',
+      icon: 'icon-detail',
+      onPress: () => navigation.navigate('Detail'),
+    },
+    {
+      title: '账户管理',
+      icon: 'icon-account',
+      onPress: () => navigation.navigate('Account'),
+    },
+    {
+      title: '关于我们',
+      icon: 'icon-about',
+      onPress: () => navigation.navigate('About'),
+    },
+    {
+      title: '账本管理',
+      icon: 'icon-books',
+      onPress: () => navigation.navigate('Books'),
+    },
+    {
+      title: '用户信息',
+      icon: 'icon-userinfo',
+      onPress: () => navigation.navigate('UserInfo'),
+    },
+  ];
 
-  // 退出登录
-  const logout = async () => {
-    localStorage.removeItem('token');
-    navigateTo('/login');
-  };
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <View style={styles.userInfo}>
+          <View style={styles.avatar}>
+            <CustomIcon type="icon-user" size={40} color="#fff" />
+          </View>
+          <View style={styles.userDetails}>
+            <Text style={styles.username}>用户</Text>
+            <Text style={styles.userDesc}>欢迎使用记账应用</Text>
+          </View>
+        </View>
+      </View>
 
-  return <div className={s.user}>
-    <div className={s.head}>
-      <div className={s.info}>
-        <span>昵称：{ user.username }</span>
-        <span onClick={() => setShow(true)}>
-          <CustomIcon type="icon-qianming" />
-          <b>{ user.signature || '暂无内容' }</b>
-        </span>
-      </div>
-      <img className={s.avatar} style={{ width: 60, height: 60, borderRadius: 8 }} src={avatar} alt="" />
-   </div>
-   <div className={s.content}>
-    <List>
-      <List.Item
-        hasArrow
-        title="用户信息修改"
-        onClick={() => navigateTo('/userinfo')}
-        prefix={ <CustomIcon type="icon-wode" /> }
-      />
-      <List.Item
-        hasArrow
-        title="重制密码"
-        onClick={() => navigateTo('/account')}
-        prefix={ <CustomIcon type="icon-zhongzhi" /> }
-      />
-      <List.Item
-        className={s.importBtn}
-        title="导入账本"
-        prefix={ <CustomIcon type="icon-print" /> }
-      >
-        <input className={s.importInput} type="file" name="file" onChange={(e) => handleChangeFile(e)} />
-      </List.Item>
-      <List.Item
-        hasArrow
-        title="我的账本"
-        onClick={() => navigateTo('/books')}
-        prefix={ <CustomIcon type="icon-accountbook" /> }
-      />
-      <List.Item
-        hasArrow
-        title="关于"
-        onClick={() => navigateTo('/about')}
-        prefix={ <CustomIcon type="icon-guanyu_o" /> }
-      />
-      </List>
-   </div>
-   <Button className={s.logout} block theme="danger" onClick={logout}>退出登录</Button>
-   <Modal
-      visible={show}
-      title="标题"
-      closable
-      onCancel={() => setShow(false)}
-      footer={
-        <Button block theme="primary" onClick={confirmSig}>
-          确认
-        </Button>
-      }
-    >
-    <Input
-        autoHeight
-        showLength
-        maxLength={50}
-        type="text"
-        rows={3}
-        value={signature}
-        placeholder="请输入备注信息"
-        onChange={(event) => setSignature(event.target.value)}
-        />
-    </Modal>
-  </div>
+      <View style={styles.menuContainer}>
+        {menuItems.map((item, index) => (
+          <TouchableOpacity
+            key={index}
+            style={styles.menuItem}
+            onPress={item.onPress}
+          >
+            <View style={styles.menuLeft}>
+              <CustomIcon type={item.icon} size={20} color="#666" />
+              <Text style={styles.menuTitle}>{item.title}</Text>
+            </View>
+            <CustomIcon type="icon-forward" size={16} color="#ccc" />
+          </TouchableOpacity>
+        ))}
+      </View>
+
+      <TouchableOpacity style={styles.logoutBtn} onPress={handleLogout}>
+        <Text style={styles.logoutText}>退出登录</Text>
+      </TouchableOpacity>
+    </ScrollView>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    backgroundColor: '#007fff',
+    padding: 20,
+    paddingTop: 40,
+  },
+  userInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  avatar: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginRight: 16,
+  },
+  userDetails: {
+    flex: 1,
+  },
+  username: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#fff',
+    marginBottom: 4,
+  },
+  userDesc: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.8)',
+  },
+  menuContainer: {
+    backgroundColor: '#fff',
+    margin: 16,
+    borderRadius: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  menuItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    padding: 16,
+    borderBottomWidth: 1,
+    borderBottomColor: '#f5f5f5',
+  },
+  menuLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  menuTitle: {
+    fontSize: 16,
+    color: '#333',
+    marginLeft: 12,
+  },
+  logoutBtn: {
+    backgroundColor: '#fff',
+    margin: 16,
+    padding: 16,
+    borderRadius: 8,
+    alignItems: 'center',
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  logoutText: {
+    fontSize: 16,
+    color: '#ff4757',
+    fontWeight: 'bold',
+  },
+});
 
 export default User;

@@ -1,44 +1,36 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Toast } from 'zarm';
-import cx from 'classnames';
-import LoginTitleIcon from '@/assets/login-title-icon.webp';
-import axios from '@/utils/axios'
-import { useNavigate } from "react-router-dom";
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Image,
+  Alert,
+  KeyboardAvoidingView,
+  Platform,
+  ScrollView,
+} from 'react-native';
+import axios from '../utils/axios';
 
-import s from './style.module.less';
-
-const Login = () => {
-  const navigateTo = useNavigate();
+const Login = ({ navigation }) => {
   const [type, setType] = useState('login'); // 登录注册类型
   const [username, setUsername] = useState(''); // 账号
   const [password, setPassword] = useState(''); // 密码
   const [imageLoaded, setImageLoaded] = useState(false);
 
-  // 预加载登录图标
-  useEffect(() => {
-    const img = new Image();
-    img.onload = () => {
-      setImageLoaded(true);
-      console.log('登录图标预加载完成');
-    };
-    img.onerror = (error) => {
-      console.error('登录图标预加载失败:', error);
-      setImageLoaded(true); // 即使失败也设置为已加载
-    };
-    img.src = LoginTitleIcon;
-  }, []);
-  
   const onSubmit = async () => {
     if (!username) {
-      Toast.show('请输入账号')
-      return
+      Alert.alert('提示', '请输入账号');
+      return;
     }
     if (!password) {
-      Toast.show('请输入密码')
-      return
+      Alert.alert('提示', '请输入密码');
+      return;
     }
+
     try {
-      if (type == 'login') {
+      if (type === 'login') {
         const { data } = await axios({
           url: '/api/user/login',
           method: 'POST',
@@ -47,11 +39,13 @@ const Login = () => {
             password
           }
         });
-        localStorage.setItem('token', data.token);
-        axios.defaults.headers['Authorization'] = data.token
+        
+        // 在 React Native 中，我们使用 global 来存储 token
+        global.token = data.token;
+        axios.defaults.headers['Authorization'] = data.token;
 
-        // 登录成功后直接跳转，不加载类型数据
-        navigateTo('/', { replace: true })
+        // 登录成功后跳转到主页面
+        navigation.replace('Main');
       } else {
         const { data } = await axios({
           url: '/api/user/register',
@@ -61,50 +55,123 @@ const Login = () => {
             password
           }
         });
-        Toast.show('注册成功');
-         setType('login');
+        Alert.alert('提示', '注册成功');
+        setType('login');
       }
     } catch (err) {
-      console.error(err)
-      Toast.show(err.msg);
+      console.error(err);
+      Alert.alert('错误', err.msg || '操作失败');
     }
   };
 
-  useEffect(() => {
-    document.title = type == 'login' ? '登录' : '注册';
-  }, [type])
-  
-  return <div className={s.auth}>
-    {!imageLoaded && (
-      <div className={s.imagePlaceholder}>
-        <div className={s.loadingSpinner}></div>
-      </div>
-    )}
-    <img 
-      className={cx(s.loginTitleIcon, { [s.hidden]: !imageLoaded })} 
-      src={LoginTitleIcon} 
-      alt="LoginTitleIcon" 
-      loading="eager"
-      fetchPriority="high"
-      onLoad={() => setImageLoaded(true)}
-      onError={(e) => {
-        console.error('登录图标加载失败:', e);
-        setImageLoaded(true); // 即使失败也设置为已加载
-        // 可以设置一个备用图片
-        // e.target.src = '/fallback-icon.png';
-      }}
-    />
-    <div className={s.operation}>
-      <a href="http://localhost:3000/">
-        <Button
-          className={s.loginBtn}
-          size={'sm'}
-          block
-          ghost
-          shadow
-        >{type == 'login' ? '登 录' : '注 册'}</Button>
-      </a>
-    </div>
-  </div>
+  return (
+    <KeyboardAvoidingView
+      style={styles.container}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView contentContainerStyle={styles.scrollContainer}>
+        <View style={styles.auth}>
+          <Image
+            source={require('../assets/login-title-icon.webp')}
+            style={[styles.loginTitleIcon, { opacity: imageLoaded ? 1 : 0 }]}
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
+          />
+          
+          <View style={styles.form}>
+            <TextInput
+              style={styles.input}
+              placeholder="请输入账号"
+              value={username}
+              onChangeText={setUsername}
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            
+            <TextInput
+              style={styles.input}
+              placeholder="请输入密码"
+              value={password}
+              onChangeText={setPassword}
+              secureTextEntry
+              autoCapitalize="none"
+              autoCorrect={false}
+            />
+            
+            <TouchableOpacity style={styles.loginBtn} onPress={onSubmit}>
+              <Text style={styles.loginBtnText}>
+                {type === 'login' ? '登 录' : '注 册'}
+              </Text>
+            </TouchableOpacity>
+            
+            <TouchableOpacity
+              style={styles.switchBtn}
+              onPress={() => setType(type === 'login' ? 'register' : 'login')}
+            >
+              <Text style={styles.switchBtnText}>
+                {type === 'login' ? '没有账号？去注册' : '已有账号？去登录'}
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </ScrollView>
+    </KeyboardAvoidingView>
+  );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+  },
+  scrollContainer: {
+    flexGrow: 1,
+    justifyContent: 'center',
+  },
+  auth: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingHorizontal: 32,
+  },
+  loginTitleIcon: {
+    width: 200,
+    height: 200,
+    marginBottom: 48,
+    resizeMode: 'contain',
+  },
+  form: {
+    width: '100%',
+  },
+  input: {
+    height: 48,
+    borderWidth: 1,
+    borderColor: '#ddd',
+    borderRadius: 8,
+    paddingHorizontal: 16,
+    marginBottom: 16,
+    fontSize: 16,
+  },
+  loginBtn: {
+    height: 48,
+    backgroundColor: '#007fff',
+    borderRadius: 8,
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginBottom: 16,
+  },
+  loginBtnText: {
+    color: '#fff',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  switchBtn: {
+    alignItems: 'center',
+  },
+  switchBtnText: {
+    color: '#007fff',
+    fontSize: 14,
+  },
+});
+
 export default Login;

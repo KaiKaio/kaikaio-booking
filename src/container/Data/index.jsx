@@ -1,296 +1,147 @@
-import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Progress } from "zarm";
-import cx from "classnames";
-import dayjs from "dayjs";
-import axios from '@/utils/axios'
-import { useSelector } from 'react-redux'
-import CustomIcon from "@/components/CustomIcon";
-import s from "./style.module.less";
-import { useNavigate } from "react-router-dom";
-import ScrollDateSelect from '@/components/ScrollDateSelect/ScrollDateSelect'
-import echarts from '@/utils/echarts';
-
-let proportionChart = null;
+import React, { useState, useEffect } from 'react';
+import {
+  View,
+  Text,
+  StyleSheet,
+  ScrollView,
+  Dimensions,
+} from 'react-native';
+import { LineChart, PieChart } from 'react-native-chart-kit';
+import { useSelector } from 'react-redux';
+import axios from '../utils/axios';
 
 const Data = () => {
-  const navigateTo = useNavigate();
-  const types = useSelector((state) => state.types.types)
-
-  const [totalType, setTotalType] = useState("expense");
-  const [totalExpense, setTotalExpense] = useState(0);
-  const [totalIncome, setTotalIncome] = useState(0);
-  const [expenseData, setExpenseData] = useState([]);
-  const [incomeData, setIncomeData] = useState([]);
-  const [pieType, setPieType] = useState("expense");
-  const [icons, setIcons] = useState({});
-  const [navDates, setNavDates] = useState([]);
-  const [activeDate, setActiveDate] = useState(null);
+  const [chartData, setChartData] = useState([]);
+  const [pieData, setPieData] = useState([]);
+  const types = useSelector((state) => state.types.types);
 
   useEffect(() => {
-    const iconsMap = {};
-    if (!types?.length) {
-      return;
-    }
-    types.forEach((item) => {
-      iconsMap[item.id] = item.icon;
-    });
-    setIcons(iconsMap);
-  }, [types]);
+    getChartData();
+  }, []);
 
-  useEffect(() => {
-    if (!activeDate) {
-      return
-    }
-    getData();
-  }, [activeDate])
+  const getChartData = async () => {
+    try {
+      const { data } = await axios({
+        url: '/api/bill/data',
+        params: {
+          date: new Date().toISOString().split('T')[0],
+        }
+      });
 
-  useEffect(() => {
-    axios({
-      url: '/api/bill/getEarliestItemDate'
-    }).then((res) => {
-      const { data = '' } = res;
-      const dates = localGenerateDates(data)
-      setNavDates(dates)
-      
-      setActiveDate(dates[dates.length - 3])
-    });
-
-    return () => {
-      // 每次组件卸载的时候，需要释放图表实例。clear 只是将其清空不会释放。
-      proportionChart?.dispose();
-    };
-  }, [])
-
-  const localGenerateDates = (result) => {
-    if (!result) {
-      return []
-    }
-
-    let dateList = ['', '']
-    let cur = dayjs(result).startOf('month')
-    while (cur <= dayjs().startOf('month')) {
-      dateList.push(cur.format('YYYY-MM'))
-
-      if (dayjs(cur).month() === 11) {
-        dateList.push(cur.add(1, 'month').format('YYYY'))
-      }
-      cur = cur.add(1, 'month')
-    }
-    dateList = [...dateList, '', '']
-    return dateList
-  }
-
-  const getData = async () => {
-    const isYearSearch = activeDate.length === 4
-    let params = {}
-
-    if (!isYearSearch) {
-      params = {
-        start: dayjs(activeDate).startOf("month").format("YYYY-MM-DD") + " 00:00:00",
-        end: dayjs(activeDate).endOf("month").format("YYYY-MM-DD") + " 23:59:59"
-      }
-    } else {
-      params = {
-        start: dayjs(activeDate).startOf("year").format("YYYY-MM-DD") + " 00:00:00",
-        end: dayjs(activeDate).endOf("year").format("YYYY-MM-DD") + " 23:59:59"
-      }
-    }
-
-    const { data } = await axios({
-      url: '/api/bill/data',
-      params
-    });
-
-    // 总收支
-    setTotalExpense(data.total_expense);
-    setTotalIncome(data.total_income);
-
-    // 过滤支出和收入
-    const expense_data = data.total_data
-      .filter((item) => item.pay_type === "1")
-      .sort((a, b) => b.number - a.number); // 过滤出账单类型为支出的项
-    const income_data = data.total_data
-      .filter((item) => item.pay_type === "2")
-      .sort((a, b) => b.number - a.number); // 过滤出账单类型为收入的项
-    setExpenseData(expense_data);
-    setIncomeData(income_data);
-  
-    setPieChart(pieType == "expense" ? expense_data : income_data);
-  };
-
-  // 切换收支构成类型
-  const changeTotalType = (type) => {
-    setTotalType(type);
-  };
-
-  // 切换饼图收支类型
-  const changePieType = (type) => {
-    setPieType(type);
-
-    // 重绘饼图
-    setPieChart(type == "expense" ? expenseData : incomeData);
-  };
-
-  // 绘制饼图方法
-  const setPieChart = (data) => {
-    proportionChart = echarts.init(document.getElementById("proportion"));
-
-    proportionChart.setOption({
-      tooltip: {
-        trigger: "item",
-      },
-      legend: {
-        left: "center",
-      },
-      series: [
-        {
-          type: "pie",
-          
-          radius: ['35%', '55%'],
-          minAngle: 10,
-          label: {
-            show: true
+      // 处理折线图数据
+      const lineData = {
+        labels: data.overview.map(item => item.date),
+        datasets: [
+          {
+            data: data.overview.map(item => item.expense),
+            color: (opacity = 1) => `rgba(255, 0, 0, ${opacity})`,
+            strokeWidth: 2,
           },
-          labelLine: {
-            length: 15,
-            length2: 15,
-          },
-          itemStyle: {
-            borderRadius: 6,
-            borderColor: '#fff',
-            borderWidth: 3
-          },
-          data: data.map((item) => ({
-            value: item.number,
-            name: item.type_name,
-          }))
-        },
-      ],
-    });
-  };
+        ],
+      };
+      setChartData(lineData);
 
-  const selectMonth = (item) => {
-    setActiveDate(item);
-  };
-
-  const handleToItemList = (item) => {
-    navigateTo(`/detail?type_id=${item.type_id}`);
-  };
-
-  const list = useMemo(() => {
-    if (totalType === "expense") {
-      return expenseData;
-    } else {
-      return incomeData;
+      // 处理饼图数据
+      const pieChartData = data.typeData.map((item, index) => ({
+        name: item.type_name,
+        population: item.number,
+        color: `hsl(${index * 30}, 70%, 50%)`,
+        legendFontColor: '#7F7F7F',
+        legendFontSize: 12,
+      }));
+      setPieData(pieChartData);
+    } catch (error) {
+      console.error('获取图表数据失败:', error);
     }
-  }, [totalType, expenseData, incomeData]);
+  };
 
   return (
-    <div className={s.data}>
-      <div className={s.total}>
-        <div className={s.title}>共支出</div>
-        <div className={s.expense}>¥{totalExpense}</div>
-        <div className={s.income}>共收入¥{totalIncome}</div>
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.title}>数据统计</Text>
+      </View>
 
-        <ScrollDateSelect
-          dateList={navDates}
-          onSelect={(item) => setActiveDate(item)}
-          defaultSelectVal={activeDate}
-        />
-      </div>
-      <div className={s.structure}>
-        <div className={s.head}>
-          <span className={s.title}>收支构成</span>
-          <div className={s.tab}>
-            <span
-              onClick={() => changeTotalType("expense")}
-              className={cx({
-                [s.expense]: true,
-                [s.active]: totalType == "expense",
-              })}
-            >
-              支出
-            </span>
-            <span
-              onClick={() => changeTotalType("income")}
-              className={cx({
-                [s.income]: true,
-                [s.active]: totalType == "income",
-              })}
-            >
-              收入
-            </span>
-          </div>
-        </div>
-        <div className={s.content}>
-          {list.map((item) => (
-            <div key={item.type_id} className={s.item} onClick={() => handleToItemList(item)}>
-              <div className={s.left}>
-                <div className={s.type}>
-                  <span
-                    className={cx({
-                      [s.expense]: totalType == "expense",
-                      [s.income]: totalType == "income",
-                    })}
-                  >
-                    <CustomIcon
-                      className={s.iconfont}
-                      type={icons[item.type_id]}
-                    />
-                  </span>
-                  <span className={s.name}>{item.type_name}</span>
-                </div>
-                <div className={s.progress}>
-                  ¥{Number(item.number).toFixed(2) || 0}
-                </div>
-              </div>
-              <div className={s.right}>
-                <div className={s.percent}>
-                  <Progress
-                    shape="line"
-                    percent={Number(
-                      (item.number /
-                        Number(
-                          totalType == "expense" ? totalExpense : totalIncome
-                        )) *
-                        100
-                    ).toFixed(2)}
-                    theme="primary"
-                  />
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
-        <div className={s.proportion}>
-          <div className={s.head}>
-            <span className={s.title}>收支构成</span>
-            <div className={s.tab}>
-              <span
-                onClick={() => changePieType("expense")}
-                className={cx({
-                  [s.expense]: true,
-                  [s.active]: pieType == "expense",
-                })}
-              >
-                支出
-              </span>
-              <span
-                onClick={() => changePieType("income")}
-                className={cx({
-                  [s.income]: true,
-                  [s.active]: pieType == "income",
-                })}
-              >
-                收入
-              </span>
-            </div>
-          </div>
-          <div id="proportion"></div>
-        </div>
-      </div>
-    </div>
+      <View style={styles.chartContainer}>
+        <Text style={styles.chartTitle}>支出趋势</Text>
+        {chartData.labels && (
+          <LineChart
+            data={chartData}
+            width={Dimensions.get('window').width - 32}
+            height={220}
+            chartConfig={{
+              backgroundColor: '#ffffff',
+              backgroundGradientFrom: '#ffffff',
+              backgroundGradientTo: '#ffffff',
+              decimalPlaces: 2,
+              color: (opacity = 1) => `rgba(0, 127, 255, ${opacity})`,
+              labelColor: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+              style: {
+                borderRadius: 16,
+              },
+            }}
+            bezier
+            style={styles.chart}
+          />
+        )}
+      </View>
+
+      <View style={styles.chartContainer}>
+        <Text style={styles.chartTitle}>支出分类</Text>
+        {pieData.length > 0 && (
+          <PieChart
+            data={pieData}
+            width={Dimensions.get('window').width - 32}
+            height={220}
+            chartConfig={{
+              color: (opacity = 1) => `rgba(0, 0, 0, ${opacity})`,
+            }}
+            accessor="population"
+            backgroundColor="transparent"
+            paddingLeft="15"
+            style={styles.chart}
+          />
+        )}
+      </View>
+    </ScrollView>
   );
 };
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  header: {
+    backgroundColor: '#fff',
+    padding: 16,
+    marginBottom: 8,
+  },
+  title: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    color: '#333',
+  },
+  chartContainer: {
+    backgroundColor: '#fff',
+    margin: 16,
+    padding: 16,
+    borderRadius: 8,
+    elevation: 2,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+  },
+  chartTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#333',
+    marginBottom: 16,
+  },
+  chart: {
+    marginVertical: 8,
+    borderRadius: 16,
+  },
+});
 
 export default Data;
