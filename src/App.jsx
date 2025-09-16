@@ -31,7 +31,7 @@ const App = () => {
           msg: 'token received',
         },
         // 'https://sso.kaikaio.com/',
-        'http://localhost:3000/',
+        'http://10.242.78.83:3000/',
       );
     }
   };
