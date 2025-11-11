@@ -10,6 +10,7 @@ import axios from '@/utils/axios'
 import { ConfigProvider } from 'zarm';
 import routes from '@/router';
 import NavBar from '@/components/NavBar';
+import KeepAlivePages from '@/components/KeepAlivePages';
 import { useDispatch  } from 'react-redux'
 import { setTypes } from '@/store/typesSlice'
 
@@ -72,9 +73,13 @@ const App = () => {
   return <ConfigProvider primaryColor={'#007fff'}>
     <>
       <Suspense fallback={<div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>加载中...</div>}>
+        {/* 保活路由：仅对 “/” 和 “/data” 生效 */}
+        <KeepAlivePages />
         <Routes>
           {
-            routes.map(route => {
+            routes
+              .filter(route => !['/', '/data'].includes(route.path))
+              .map(route => {
               return (
                 <Route
                   exact
