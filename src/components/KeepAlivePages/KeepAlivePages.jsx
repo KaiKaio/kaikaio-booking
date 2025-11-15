@@ -1,5 +1,8 @@
 import React, { useRef } from 'react';
 import { useLocation } from 'react-router-dom';
+import styles from './style.module.less'
+
+
 
 // 仅为指定的两个页面做保活
 const Home = React.lazy(() => import('@/container/Home'));
@@ -33,7 +36,7 @@ export default function KeepAlivePages() {
   return (
     <>
       {[...cacheRef.current.entries()].map(([key, element]) => (
-        <div key={key} style={{ display: key === pathname ? 'block' : 'none' }}>
+        <div key={key} className={[styles.keepAlivePage, key === pathname ? styles.block : styles.none].join(' ')}>
           {element}
         </div>
       ))}

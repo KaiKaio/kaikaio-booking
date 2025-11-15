@@ -10,7 +10,7 @@ import axios from '@/utils/axios'
 import { ConfigProvider } from 'zarm';
 import routes from '@/router';
 import NavBar from '@/components/NavBar';
-import KeepAlivePages from '@/components/KeepAlivePages';
+import KeepAlivePages from '@/components/KeepAlivePages/KeepAlivePages';
 import { useDispatch  } from 'react-redux'
 import { setTypes } from '@/store/typesSlice'
 
