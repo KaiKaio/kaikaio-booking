@@ -79,7 +79,7 @@ export const imgUrlTrans = (url) => {
   if (url && url.startsWith('http')) {
     return url
   } else {
-    url = `${MODE == 'development' ? 'http://10.242.78.83:7002' : baseUrl}${url}`
+    url = `${MODE == 'development' ? import.meta.env.VITE_API_HOST_7002 : baseUrl}${url}`
     return url
   }
 }

@@ -31,8 +31,7 @@ const App = () => {
         {
           msg: 'token received',
         },
-        // 'https://sso.kaikaio.com/',
-        'http://10.242.78.83:3000/',
+        import.meta.env.VITE_SSO_HOST,
       );
     }
   };

@@ -95,7 +95,7 @@ const Login = () => {
       }}
     />
     <div className={s.operation}>
-      <a href="http://10.242.78.83:3000/">
+      <a href={import.meta.env.VITE_SSO_HOST}>
         <Button
           className={s.loginBtn}
           size={'sm'}

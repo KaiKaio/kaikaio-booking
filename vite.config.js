@@ -1,11 +1,14 @@
-import { defineConfig } from 'vite'
+import { defineConfig, loadEnv } from 'vite'
 import reactRefresh from '@vitejs/plugin-react-refresh'
 import path from 'path'
 import viteCompression from 'vite-plugin-compression'
 import { viteExternalsPlugin } from 'vite-plugin-externals'
 
 // https://vitejs.dev/config/
-export default defineConfig({
+export default defineConfig(({ mode }) => {
+  const env = loadEnv(mode, process.cwd())
+  
+  return {
   plugins: [
     reactRefresh(),
     viteExternalsPlugin({
@@ -71,16 +74,14 @@ export default defineConfig({
     // 启用CSS代码分割
     cssCodeSplit: true,
   },
-  server: {
-    host: '0.0.0.0',
-    port: 3001,
-    proxy: {
-      '/api': {
-        // 当遇到 /api 路径时，将其转换成 target 的值
-        // target: 'http://47.99.134.126:7009',
-        target: 'http://10.242.78.83:7009',
-        changeOrigin: true
-        // rewrite: path => path.replace(/^\/api/, '') // 将 /api 重写为空
+    server: {
+      host: '0.0.0.0',
+      port: 3001,
+      proxy: {
+        '/api': {
+          target: env.VITE_API_HOST_7009,
+          changeOrigin: true
+        }
       }
     }
   }
