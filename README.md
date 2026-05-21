@@ -6,7 +6,7 @@
 
 > 测试账号：admin，测试密码：111111。也可以自行注册使用。
 
-**「掘掘记账本」前端代码开源地址：** https://github.com/Nick930826/juejue-vite-h5
+**「掘掘记账本」前端代码开源地址：** https://github.com/Nick930826/kaikaio-booking-h5
 
 **「掘掘记账本」后端代码开源地址：** https://github.com/Nick930826/jue-diary-server
 
