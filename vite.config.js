@@ -79,7 +79,7 @@ export default defineConfig(({ mode }) => {
       port: 3001,
       proxy: {
         '/api': {
-          target: env.VITE_API_HOST_7009,
+          target: env.VITE_API_HOST,
           changeOrigin: true
         }
       }
