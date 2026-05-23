@@ -81,6 +81,10 @@ export default defineConfig(({ mode }) => {
         '/api': {
           target: env.VITE_API_HOST,
           changeOrigin: true
+        },
+        '/public': {
+          target: env.VITE_API_HOST,
+          changeOrigin: true
         }
       }
     }
