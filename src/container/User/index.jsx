@@ -88,19 +88,19 @@ const User = () => {
         onClick={() => navigateTo('/account')}
         prefix={ <CustomIcon type="icon-zhongzhi" /> }
       />
-      <List.Item
+      {/* <List.Item
         className={s.importBtn}
         title="导入账本"
         prefix={ <CustomIcon type="icon-print" /> }
       >
-        <input className={s.importInput} type="file" name="file" onChange={(e) => handleChangeFile(e)} />
-      </List.Item>
-      <List.Item
+        <input classNa me={s.importInput} type="file" name="file" onChange={(e) => handleChangeFile(e)} />
+      </List.Item> */}
+      {/* <List.Item
         hasArrow
         title="我的账本"
         onClick={() => navigateTo('/books')}
         prefix={ <CustomIcon type="icon-accountbook" /> }
-      />
+      /> */}
       <List.Item
         hasArrow
         title="关于"
