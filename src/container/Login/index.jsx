@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Toast } from 'zarm';
+import { Button, Toast } from '@/utils/zarm';
 import cx from 'classnames';
 import LoginTitleIcon from '@/assets/login-title-icon.webp';
 import axios from '@/utils/axios'

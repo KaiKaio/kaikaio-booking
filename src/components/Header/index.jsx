@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom'
-import { NavBar, Icon } from 'zarm';
+import { NavBar, Icon } from '@/utils/zarm';
 
 import s from './style.module.less'
 

@@ -1,5 +1,5 @@
 import React from 'react';
-import { List, Input, Button, Toast } from 'zarm';
+import { List, Input, Button, Toast } from '@/utils/zarm';
 import { createForm  } from 'rc-form';
 import Header from '@/components/Header'
 import { post } from '@/utils'

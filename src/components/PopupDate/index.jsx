@@ -1,6 +1,6 @@
 import React, { forwardRef, useState } from 'react'
 import PropTypes from 'prop-types'
-import { Popup, DatePicker  } from 'zarm'
+import { Popup, DatePicker  } from '@/utils/zarm'
 import dayjs from 'dayjs'
 
 const columnTypeMap = {

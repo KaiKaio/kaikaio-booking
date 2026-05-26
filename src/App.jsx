@@ -7,7 +7,7 @@ import {
   useNavigate
 } from "react-router-dom";
 import axios from '@/utils/axios'
-import { ConfigProvider } from 'zarm';
+import { ConfigProvider } from '@/utils/zarm';
 import routes from '@/router';
 import NavBar from '@/components/NavBar';
 import KeepAlivePages from '@/components/KeepAlivePages/KeepAlivePages';

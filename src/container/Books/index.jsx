@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import Header from "@/components/Header";
 import axios from '@/utils/axios'
-import { Modal, List, Input } from 'zarm';
+import { Modal, List, Input } from '@/utils/zarm';
 import s from "./style.module.less";
 
 const Books = () => {
