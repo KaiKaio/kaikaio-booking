@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { useLocation } from 'react-router-dom';
-import { Pull } from '@/utils/zarm';
+import { Pull } from '@/utils/antd-mobile';
 import Empty from '@/components/Empty'
 import qs from 'query-string';
 import { useSelector } from 'react-redux'

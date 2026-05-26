@@ -1,5 +1,5 @@
 import axios from 'axios'
-import { Toast } from 'zarm'
+import { Toast } from '@/utils/antd-mobile'
 import { router } from '@/main'
 
 const MODE = import.meta.env.MODE // 环境变量

@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { List, Modal, Input, Button, Toast } from '@/utils/zarm';
+import { List, Modal, Input, Button, Toast } from '@/utils/antd-mobile';
 import axios from '@/utils/axios'
 import CustomIcon from '@/components/CustomIcon';
 

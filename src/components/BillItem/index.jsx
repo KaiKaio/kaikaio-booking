@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
-import { List, SwipeAction, Modal, Toast } from '@/utils/zarm';
+import { List, SwipeAction, Modal, Toast } from '@/utils/antd-mobile';
 import CustomIcon from '../CustomIcon';
 import { post, get } from '@/utils';
 

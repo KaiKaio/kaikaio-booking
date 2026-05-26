@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import PropTypes from "prop-types";
 import cx from 'classnames'
-import { TabBar } from "zarm";
+import { TabBar } from "@/utils/antd-mobile";
 import { useNavigate } from "react-router-dom";
 import CustomIcon from "../CustomIcon";
 import s from "./style.module.less";

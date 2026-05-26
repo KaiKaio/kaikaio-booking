@@ -5,7 +5,6 @@ import { store } from '@/store'
 import { createBrowserRouter, RouterProvider } from "react-router-dom"
 import 'lib-flexible/flexible'
 import './index.css'
-import 'zarm/dist/zarm.css'; // TODO: 渐进式迁移完成后移除，antd-mobile 不需要额外引入 CSS
 import App from './App'
 
 export const router = createBrowserRouter([

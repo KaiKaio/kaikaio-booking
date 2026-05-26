@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState, useMemo } from "react";
-import { Progress } from "zarm";
+import { Progress } from "@/utils/antd-mobile";
 import cx from "classnames";
 import dayjs from "dayjs";
 import axios from '@/utils/axios'

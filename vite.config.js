@@ -53,7 +53,7 @@ export default defineConfig(({ mode }) => {
           // 将状态管理相关库分离
           'redux-vendor': ['@reduxjs/toolkit', 'react-redux'],
           // 将 UI 库分离
-          'ui-vendor': ['zarm'],
+          'ui-vendor': ['antd-mobile', 'antd-mobile-icons'],
           // 将工具库分离
           'utils-vendor': ['axios', 'dayjs', 'classnames']
         }

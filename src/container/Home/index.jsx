@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react'
-import { Icon, Pull } from '@/utils/zarm'
+import { Icon, Pull } from '@/utils/antd-mobile'
 import dayjs from 'dayjs'
 import PopupType from '@/components/PopupType'
 import PopupDate from '@/components/PopupDate'
