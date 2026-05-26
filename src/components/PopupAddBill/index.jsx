@@ -3,7 +3,8 @@
  */
 import React, { forwardRef, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
-import { Popup, Icon, Toast, Input, Tabs, Keyboard  } from 'zarm';
+import { Popup, Icon, Toast, Input, Keyboard  } from '@/utils/zarm';
+import { Swiper } from 'antd-mobile';
 import cx from 'classnames'
 import dayjs from 'dayjs';
 import { useSelector } from 'react-redux'
@@ -12,8 +13,6 @@ import PopupDate from '../PopupDate'
 import { post } from '@/utils'
 
 import s from './style.module.less';
-
-const { Panel } = Tabs;
 
 const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
   const types = useSelector((state) => state.types.types)
@@ -228,10 +227,15 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
           <span className={cx(s.amount, s.animation)}>{amount}</span>
         </div>
         <div className={s.typeWarp}>
-          <Tabs swipeable value={tabsVal}>
+          <Swiper
+            className={s.typeSwiper}
+            index={tabsVal}
+            onIndexChange={index => setTabsVal(index)}
+            allowTouchMove
+          >
             {
               typeTabs.map((item) => (
-                <Panel title={`选项卡${item}`} key={item}>
+                <Swiper.Item key={item}>
                   <div className={s.typePanel}>
                     {
                       typeList.slice(item * 15, (item + 1) * 15).map(titem => (
@@ -256,10 +260,10 @@ const PopupAddBill = forwardRef(({ detail = {}, onReload, setDetail }, ref) => {
                       ))
                     }
                   </div>
-                </Panel>
+                </Swiper.Item>
               ))
             }
-          </Tabs>
+          </Swiper>
         </div>
         <div className={s.remark}>
           <span onClick={() => handleEnterRemark()}>
