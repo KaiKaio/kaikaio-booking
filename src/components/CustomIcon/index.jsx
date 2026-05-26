@@ -1,3 +1,17 @@
-import { Icon } from '@/utils/zarm';
+import React from 'react';
+import PropTypes from 'prop-types';
 
-export default Icon.createFromIconfont('//at.alicdn.com/t/c/font_4004765_2pncof3lhbk.js');
+const CustomIcon = (props) => {
+  return (
+    <svg className={`icon ${props.className || ''}`} aria-hidden="true">
+      <use xlinkHref={`#${props.type || ''}`}></use>
+    </svg>
+  );
+};
+
+CustomIcon.propTypes = {
+  type: PropTypes.string,
+  className: PropTypes.string
+};
+
+export default CustomIcon;
