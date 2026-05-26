@@ -9,18 +9,22 @@
  * P0: Tabs（已迁移）
  * P1: Toast, Button, Input（已迁移）
  * P2: Modal, Popup, List, Icon（已迁移）
- * P3: Pull, DatePicker, SwipeAction, Progress, Checkbox
+ * P3: Pull, DatePicker, SwipeAction, Progress, Checkbox（已迁移）
  * P4: Keyboard → NumberKeyboard, FilePicker → ImageUploader, TabBar, NavBar, ConfigProvider
  */
 
-import React from 'react'
+import React, { useRef, useEffect } from 'react'
 import { 
   Toast as AntdToast, 
   Button as AntdButton, 
   Input as AntdInput,
   Modal as AntdModal,
   Popup as AntdPopup,
-  List as AntdList
+  List as AntdList,
+  PullToRefresh,
+  SwipeAction as AntdSwipeAction,
+  DatePicker as AntdDatePicker,
+  ProgressBar
 } from 'antd-mobile'
 import { 
   CloseCircleFill,
@@ -29,11 +33,6 @@ import {
 } from 'antd-mobile-icons'
 import { 
   Tabs,
-  Pull,
-  Progress,
-  SwipeAction,
-  DatePicker,
-  Checkbox,
   Keyboard,
   FilePicker,
   TabBar,
@@ -143,6 +142,21 @@ export const Modal = ({
   )
 }
 
+// Modal.confirm 静态方法适配
+Modal.confirm = ({ title, content, onConfirm }) => {
+  AntdModal.confirm({
+    content: (
+      <div>
+        <div style={{ fontWeight: 'bold', marginBottom: 8 }}>{title}</div>
+        <div>{content}</div>
+      </div>
+    ),
+    confirmText: '确定',
+    cancelText: '取消',
+    onConfirm
+  })
+}
+
 // Popup 适配
 export const Popup = ({ 
   visible, 
@@ -226,9 +240,106 @@ export const Icon = ({ type, theme, ...props }) => {
   )
 }
 
-// ==================== ⏳ 待迁移（zarm） ====================
-// P3 - 低频组件
-export { Pull, Progress, SwipeAction, DatePicker, Checkbox }
+// Pull 适配：下拉刷新 + 上拉加载
+// 注意：antd-mobile PullToRefresh 只支持下拉刷新
+// 上拉加载需要单独实现或使用 InfiniteScroll
+export const Pull = React.forwardRef(({ refresh, load, children, ...props }, ref) => {
+  // load.state: 0=success, 1=loading, 2=failure
+  // refresh.state: 0=success, 1=loading, 2=failure
+  
+  return (
+    <PullToRefresh
+      onRefresh={async () => {
+        if (refresh?.handler) {
+          await refresh.handler()
+        }
+      }}
+      {...props}
+    >
+      {children}
+      {/* 上拉加载提示 */}
+      {load?.state === 1 && (
+        <div style={{ textAlign: 'center', padding: '12px', color: '#999' }}>
+          加载中...
+        </div>
+      )}
+    </PullToRefresh>
+  )
+})
 
+// DatePicker 适配
+export const DatePicker = ({ 
+  visible, 
+  value, 
+  columnType, 
+  mode, 
+  onConfirm, 
+  onCancel,
+  ...props 
+}) => {
+  if (!visible) return null
+  
+  // columnType 映射：['year', 'month'] -> 'month', ['year', 'month', 'day'] -> 'date'
+  const precisionMap = {
+    'year,month': 'month',
+    'year,month,day': 'day'
+  }
+  
+  const precisionKey = columnType?.join(',') || 'year,month,day'
+  const precision = precisionMap[precisionKey] || 'day'
+  
+  return (
+    <AntdDatePicker
+      visible={visible}
+      value={value}
+      precision={precision}
+      onConfirm={onConfirm}
+      onCancel={onCancel}
+      {...props}
+    />
+  )
+}
+
+// SwipeAction 适配
+export const SwipeAction = ({ rightActions, children, ...props }) => {
+  const adaptedActions = rightActions?.map(action => ({
+    text: action.text,
+    color: action.theme === 'danger' ? 'danger' : 'primary',
+    onClick: action.onClick
+  }))
+  
+  return (
+    <AntdSwipeAction
+      right={adaptedActions}
+      {...props}
+    >
+      {children}
+    </AntdSwipeAction>
+  )
+}
+
+// Progress 适配：使用 antd-mobile ProgressBar
+export const Progress = ({ shape, percent, theme, ...props }) => {
+  const colorMap = {
+    primary: 'primary',
+    danger: 'danger',
+    success: 'success',
+    warning: 'warning'
+  }
+  
+  const clampedPercent = Math.min(100, Math.max(0, percent))
+  
+  return (
+    <ProgressBar
+      percent={clampedPercent}
+      style={{
+        '--fill-color': `var(--adm-color-${colorMap[theme] || 'primary'})`
+      }}
+      {...props}
+    />
+  )
+}
+
+// ==================== ⏳ 待迁移（zarm） ====================
 // P4 - 特殊组件
 export { Keyboard, FilePicker, TabBar, NavBar, ConfigProvider }
